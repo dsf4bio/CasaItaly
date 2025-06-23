@@ -7,272 +7,211 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
-  body {font-family:'Poppins',sans-serif;background:#fef6f0;color:#4a3c31;line-height:1.6;}
-  header {background:#d9cbb1;}
-  nav a {transition:color .3s;font-weight:600;}
-  nav a:hover {color:#bb9457;}
-  .hero {position:relative;height:405px;overflow:hidden;border-radius:1rem;box-shadow:0 8px 24px rgba(187,148,87,0.3);}
-  .hero img {width:100%;height:100%;object-fit:cover;filter:brightness(0.75);}
-  .hero-text {position:absolute;bottom:40px;left:30px;color:#f7f3f0;max-width:520px;text-shadow:2px 2px 8px rgba(0,0,0,.7);}
+  body {font-family:'Poppins',sans-serif;background:#fef6f0;color:#4a3c31;}
   .gallery {max-width:1200px;margin:40px auto 10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;}
-  .gallery-img {
-    aspect-ratio: 4/3;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 1.1rem;
-    border: 3px solid #f3e9d2;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    transition: transform .4s cubic-bezier(.4,2,.6,1), box-shadow .3s, border-color .3s;
-    cursor: zoom-in;
-    background: #eee;
-    display: block;
-    min-height: 255px;
-    max-height: 340px;
-  }
-  .gallery-img:hover, .gallery-img:focus {
-    transform: scale(1.07);
-    box-shadow: 0 8px 32px rgba(187,148,87,0.20);
-    border-color: #bb9457;
-    outline: none;
-    z-index: 2;
-  }
-  .popup-bg {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;z-index:20000;}
-  .popup {background:white;padding:2rem;border-radius:.8rem;text-align:center;animation:fadeIn .4s;position:relative;}
+  .gallery-img {aspect-ratio: 4/3; width:100%; object-fit:cover; border-radius:1.1rem; border:3px solid #f3e9d2; box-shadow:0 4px 16px rgba(0,0,0,0.08); transition:transform .4s, box-shadow .3s, border-color .3s; cursor:zoom-in; background:#eee;}
+  .gallery-img:hover {transform:scale(1.07); box-shadow:0 8px 32px rgba(187,148,87,0.20); border-color:#bb9457;}
+  .card {background:white;border-radius:1rem;box-shadow:0 8px 16px rgba(0,0,0,0.1);padding:2.5rem;}
+  .loader2 {display:flex;justify-content:center;align-items:center;margin:1rem auto;}
+  .loader2 span {width:44px;height:44px;border:5px solid #f3e9d2;border-top:5px solid #bb9457;border-radius:50%;display:inline-block;animation:spin 1s linear infinite;}
+  @keyframes spin {100%{transform:rotate(360deg)}}
+  .popup-bg {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.55);display:none;justify-content:center;align-items:center;z-index:20000;}
+  .popup-anim {background:white;padding:2.2rem 2rem;border-radius:1.1rem;text-align:center;box-shadow:0 8px 40px #bb9457a6;position:relative;animation:popshow .45s cubic-bezier(.6,2,.4,1);}
+  @keyframes popshow {from{opacity:0;transform:scale(.8);} to{opacity:1;transform:scale(1);}}
   .close-popup-btn {position:absolute;top:10px;right:18px;font-size:2rem;font-weight:700;color:#bbb;cursor:pointer;transition:.2s;}
   .close-popup-btn:hover {color:#bb9457;}
   .cta {display:inline-block;margin-top:1rem;padding:.6rem 1.2rem;background:#bb9457;color:#fef6f0;border-radius:.6rem;font-weight:700;text-decoration:none;}
   .strikethrough {text-decoration: line-through; color: #bb9457;}
+  .prezzo-sconto {color:#15803d; font-weight:700;}
+  .form-title {text-align:center;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;}
 </style>
 </head>
 <body>
-<header class="p-4 shadow-md sticky top-0 z-50">
-  <nav class="max-w-6xl mx-auto flex justify-between items-center">
-    <h1 class="text-2xl font-extrabold">🏡 Casa Vacanze Brasile</h1>
-    <div class="space-x-6 hidden md:flex">
-      <a href="#descr1">Descrizione</a>
-      <a href="#galleria">Galleria</a>
-      <a href="#simulatore">Simulatore</a>
-      <a href="#recensioni">Recensioni</a>
-      <a href="#contatti">Contatti</a>
-    </div>
-  </nav>
-</header>
-<main class="max-w-6xl mx-auto px-4 py-10">
-
-  <section class="hero mx-auto rounded-xl shadow-lg overflow-hidden relative text-center">
-    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80">
-    <div class="hero-text">
-      <h1>Casa italiana a Porto Seguro, Brasile</h1>
-      <p>Assistenza italiana 🇮🇹🤝🇧🇷</p>
+    <!-- Banner Hero -->
+<section class="relative w-full h-[320px] mb-10 flex items-center justify-center overflow-hidden rounded-xl shadow-lg">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
+         alt="Copertina Casa Vacanze Brasile"
+         class="absolute inset-0 w-full h-full object-cover object-center brightness-75" />
+    <div class="relative z-10 text-center text-white flex flex-col items-center w-full">
+      <h2 class="text-3xl md:text-5xl font-extrabold drop-shadow mb-2">Casa Vacanze in Brasile</h2>
+      <p class="text-lg md:text-2xl font-semibold drop-shadow">Pensata per viaggitori Italiani </p>
     </div>
   </section>
+  
 
-  <section id="descr1" class="my-12 space-y-4">
-    <h2>Casa Italiana Porto Seguro Brasil</h2>
-    <h3>Vivi Porto Seguro in Esclusiva: Relax, Sicurezza e Spazio per Gruppi, Coppie o Famiglie</h3>
-    <p>Scopri la magia di Porto Seguro... spiagge spettacolari, serate vibranti sulla Passarela do Álcool, artigianato e ristoranti.</p>
-    <p>🎯 Sarete ospiti in una villa privata esclusiva, in residence di lusso, sorvegliata 24h, per garantire sicurezza e privacy.</p>
-  </section>
+<!-- DESCRIZIONE -->
+<section id="descr1" class="max-w-3xl mx-auto my-10 px-4">
+  <h2 class="text-xl font-bold mb-2">Ti aspettiamo a Porto Seguro</h2>
+  <p>
+    Vivi Porto Seguro in Esclusiva
+    Relax, Sicurezza e Spazio per Gruppi, Coppie o Famiglie
+    
+    Scopri la magia di Porto Seguro, la prima città del Brasile, dove storia, cultura e natura si incontrano in <b>un’atmosfera unica. </b> Spiagge spettacolari, serate vibranti sulla Passarela do Álcool con musica dal vivo, artigianato e ristoranti... il Brasile più autentico ti aspetta.
+    
+    🎯 E tu potrai viverlo al meglio, in una villa privata esclusiva, all’interno di un residence di lusso immerso nel verde, videosorvegliato 24h, con accesso controllato per offrirti massima sicurezza, privacy e tranquillità.
+    
+    
+  </p>
+</section>
 
-  <section id="galleria" class="gallery" aria-label="Galleria fotografica">
-    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Spiaggia tropicale" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Foresta tropicale" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" alt="Mare cristallino" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" alt="Città colorata" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" alt="Cascata nella giungla" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" alt="Vista panoramica Brasile" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?auto=format&fit=crop&w=800&q=80" alt="Rio de Janeiro" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80" alt="Tramonto tropicale" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=800&q=80" alt="Strada tra le palme" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80" alt="Spiaggia dorata" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=800&q=80" alt="Case colorate Brasile" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=800&q=80" alt="Barca sulla spiaggia" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" alt="Paesaggio naturale" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" alt="Vista aerea porto" class="gallery-img" tabindex="0">
-    <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" alt="Fiume nella foresta" class="gallery-img" tabindex="0">
-  </section>
-
-  <!-- Lightbox per la galleria -->
-  <div id="lightbox" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;cursor:zoom-out;z-index:10000;padding:20px;">
-    <img src="" alt="Foto ingrandita" style="max-width:92vw;max-height:88vh;border-radius:1rem;box-shadow:0 4px 32px #000;">
-    <button class="close-btn" style="position:absolute;top:24px;right:38px;font-size:2.8rem;font-weight:700;color:#fff;background:none;border:none;cursor:pointer;">&times;</button>
-  </div>
-
-  <!-- SIMULATORE PREZZI DOPPIO -->
-  <section id="simulatore" class="my-12">
-    <h2>Simulatore Prezzi</h2>
-    <div class="card max-w-2xl mx-auto">
-      <div class="flex gap-2 mb-5 justify-center">
-        <button type="button" id="btnGruppi" class="px-3 py-1 rounded bg-[#bb9457] text-white font-bold">Gruppi numerosi</button>
-        <button type="button" id="btnCamera" class="px-3 py-1 rounded bg-gray-200 font-bold">Coppie/Famiglie</button>
-      </div>
-      <!-- Form Gruppi -->
-      <form id="formGruppi" class="flex flex-col gap-3">
-        <label class="flex flex-col font-semibold text-sm">
-          Persone (5–30):
-          <input type="number" id="people" min="5" max="30" value="5"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Check‑in:
-          <input type="date" id="checkin"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Check‑out:
-          <input type="date" id="checkout"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <button type="submit"
-          class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">
-          Calcola
-        </button>
-        <div class="loader" id="loaderGruppi" style="display:none;"></div>
-        <div class="result mt-2 simResultGruppi font-semibold" id="simResultGruppi"></div>
-      </form>
-      <!-- Form Camera -->
-      <form id="formCamera" class="flex flex-col gap-3 hidden">
-        <label class="flex flex-col font-semibold text-sm">
-          Adulti (1-2):
-          <input type="number" id="adulti" min="1" max="2" value="2"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Bambini (0-12 anni):
-          <input type="number" id="bambini" min="0" max="5" value="0"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Check‑in:
-          <input type="date" id="checkinCam"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Check‑out:
-          <input type="date" id="checkoutCam"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <button type="submit"
-          class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">
-          Calcola
-        </button>
-        <div class="loader" id="loaderCamera" style="display:none;"></div>
-        <div class="result mt-2 simResultCamera font-semibold" id="simResultCamera"></div>
-      </form>
-      <div class="text-center mt-2"><small>📢 Prenota 8+ notti e risparmia subito!</small></div>
-    </div>
-  </section>
-
-  <!-- SEZIONE RECENSIONI -->
-  <section id="recensioni" class="my-12 max-w-3xl mx-auto">
-    <h2 class="text-2xl font-bold mb-4">Recensioni degli ospiti</h2>
-    <div class="space-y-6">
-
-      <!-- 5 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★★</span>
-          <span class="font-semibold">Giulia R.</span>
-        </div>
-        <p>Vacanza perfetta! La casa è spaziosa, pulitissima e in una zona sicura. Ci siamo sentiti subito a casa. Consigliatissima per famiglie numerose!</p>
-      </div>
-
-      <!-- 5 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★★</span>
-          <span class="font-semibold">Marco e Laura</span>
-        </div>
-        <p>Abbiamo adorato la piscina privata e la tranquillità del residence. L’assistenza italiana è stata un vero valore aggiunto. Torneremo sicuramente!</p>
-      </div>
-
-      <!-- 5 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★★</span>
-          <span class="font-semibold">Sofia B.</span>
-        </div>
-        <p>Esperienza indimenticabile! Spiagge da sogno a pochi minuti e tanti servizi a disposizione. Tutto curato nei minimi dettagli.</p>
-      </div>
-
-      <!-- 5 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★★</span>
-          <span class="font-semibold">Alessandro M.</span>
-        </div>
-        <p>Location top, ottima per gruppi di amici! Ampi spazi, barbecue e relax totale. Host sempre disponibile per ogni esigenza.</p>
-      </div>
-
-      <!-- 4 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★☆</span>
-          <span class="font-semibold">Francesca D.</span>
-        </div>
-        <p>Casa davvero bella e comoda, unica piccola pecca la connessione Wi-Fi a volte lenta. Ma nel complesso vacanza super positiva, torneremo!</p>
-      </div>
-
-      <!-- 4 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★☆</span>
-          <span class="font-semibold">Giorgio T.</span>
-        </div>
-        <p>Il soggiorno è stato ottimo, anche se avremmo gradito qualche utensile da cucina in più. Però l’host è stato gentilissimo e la posizione è fantastica!</p>
-      </div>
-
-      <!-- 4 stelle -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-xl mr-2">★★★★☆</span>
-          <span class="font-semibold">Valentina P.</span>
-        </div>
-        <p>Struttura molto accogliente, forse la piscina un po’ piccola per gruppi grandi, ma pulizia e comfort eccellenti. Esperienza positiva!</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="contatti" class="my-12">
-    <h2>Contattaci Ora</h2>
-    <div class="card max-w-2xl mx-auto">
-      <form id="contactForm" class="flex flex-col gap-3">
-        <label class="flex flex-col font-semibold text-sm">
-          Nome:
-          <input type="text" id="nome" required
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Email:
-          <input type="email" id="email" required
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-        </label>
-        <label class="flex flex-col font-semibold text-sm">
-          Messaggio:
-          <textarea id="messaggio" required rows="4"
-            class="mt-1 rounded border border-gray-300 px-3 py-2 text-base"></textarea>
-        </label>
-        <button type="submit"
-          class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">
-          Invia
-        </button>
-      </form>
-    </div>
-  </section>
-</main>
-
-<!-- Popup sconto dinamico -->
-<div class="popup-bg" id="popupSconto">
-  <div class="popup">
-    <span class="close-popup-btn" id="closePopupSconto" title="Chiudi popup">&times;</span>
-    <h3 class="text-xl font-bold mb-2">🎉 Sconto speciale!</h3>
-    <p id="popupScontoText" class="mb-3"></p>
-    <a href="#contatti" id="ctaSconto" class="cta">Contattaci ora per confermare e ottenere lo sconto</a>
-  </div>
+<!-- GALLERIA -->
+<section id="galleria" class="gallery">
+  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+</section>
+<!-- Lightbox -->
+<div id="lightbox" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:10000;">
+  <img src="" alt="Foto ingrandita" style="max-width:92vw;max-height:88vh;border-radius:1rem;box-shadow:0 4px 32px #000;">
+  <button class="close-btn" style="position:absolute;top:24px;right:38px;font-size:2.8rem;font-weight:700;color:#fff;background:none;border:none;cursor:pointer;">&times;</button>
 </div>
 
+<!-- SIMULATORE PREZZI DOPPIO -->
+<section id="simulatore" class="my-12">
+  <div class="card max-w-2xl mx-auto">
+    <div class="form-title">Simulatore prezzi</div>
+    <div class="flex gap-2 mb-5 justify-center">
+      <button type="button" id="btnGruppi" class="px-3 py-1 rounded bg-[#bb9457] text-white font-bold">Gruppi numerosi</button>
+      <button type="button" id="btnCamera" class="px-3 py-1 rounded bg-gray-200 font-bold">Coppie/Famiglie</button>
+    </div>
+    <!-- Form Gruppi -->
+    <form id="formGruppi" class="flex flex-col gap-3">
+      <label class="flex flex-col font-semibold text-sm">
+        Persone (5–30):
+        <input type="number" id="people" min="5" max="30" value="5"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Check‑in:
+        <input type="date" id="checkin"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Check‑out:
+        <input type="date" id="checkout"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <button type="submit"
+        class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">
+        Calcola
+      </button>
+      <div class="loader2" id="loaderGruppi" style="display:none;"><span></span></div>
+      <div class="result mt-2 simResultGruppi font-semibold" id="simResultGruppi"></div>
+    </form>
+    <!-- Form Camera -->
+    <form id="formCamera" class="flex flex-col gap-3 hidden">
+      <div class="form-title">Simulatore prezzi</div>
+      <label class="flex flex-col font-semibold text-sm">
+        Adulti (1-2):
+        <input type="number" id="adulti" min="1" max="2" value="2"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Bambini (0-12 anni):
+        <input type="number" id="bambini" min="0" max="5" value="0"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Check‑in:
+        <input type="date" id="checkinCam"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Check‑out:
+        <input type="date" id="checkoutCam"
+          class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <button type="submit"
+        class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">
+        Calcola
+      </button>
+      <div class="loader2" id="loaderCamera" style="display:none;"><span></span></div>
+      <div class="result mt-2 simResultCamera font-semibold" id="simResultCamera"></div>
+    </form>
+    <div class="text-center mt-2"><small>📢 Prenota 8+ notti e risparmia subito!</small></div>
+  </div>
+</section>
+
+<!-- RECENSIONI -->
+<section id="recensioni" class="my-12 max-w-3xl mx-auto">
+  <h2 class="text-2xl font-bold mb-4 text-center">Recensioni degli ospiti</h2>
+  <div class="space-y-6">
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★★</span><span class="font-semibold">Giulia R.</span></div>
+      <p>Vacanza perfetta! La casa è spaziosa, pulitissima e in una zona sicura. Ci siamo sentiti subito a casa. Consigliatissima per famiglie numerose!</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★★</span><span class="font-semibold">Marco e Laura</span></div>
+      <p>Abbiamo adorato la piscina privata e la tranquillità del residence. L’assistenza italiana è stata un vero valore aggiunto. Torneremo sicuramente!</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★★</span><span class="font-semibold">Sofia B.</span></div>
+      <p>Esperienza indimenticabile! Spiagge da sogno a pochi minuti e tanti servizi a disposizione. Tutto curato nei minimi dettagli.</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★★</span><span class="font-semibold">Alessandro M.</span></div>
+      <p>Location top, ottima per gruppi di amici! Ampi spazi, barbecue e relax totale. Host sempre disponibile per ogni esigenza.</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★☆</span><span class="font-semibold">Francesca D.</span></div>
+      <p>Casa davvero bella e comoda, unica piccola pecca la connessione Wi-Fi a volte lenta. Ma nel complesso vacanza super positiva, torneremo!</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★☆</span><span class="font-semibold">Giorgio T.</span></div>
+      <p>Il soggiorno è stato ottimo, anche se avremmo gradito qualche utensile da cucina in più. Però l’host è stato gentilissimo e la posizione è fantastica!</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-5">
+      <div class="flex items-center mb-2"><span class="text-yellow-400 text-xl mr-2">★★★★☆</span><span class="font-semibold">Valentina P.</span></div>
+      <p>Struttura molto accogliente, forse la piscina un po’ piccola per gruppi grandi, ma pulizia e comfort eccellenti. Esperienza positiva!</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATTI -->
+<section id="contatti" class="my-12">
+  <div class="card max-w-2xl mx-auto">
+    <div class="form-title">Contatti</div>
+    <form id="contactForm" class="flex flex-col gap-3">
+      <label class="flex flex-col font-semibold text-sm">
+        Nome:
+        <input type="text" id="nome" required class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Email:
+        <input type="email" id="email" required class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+      </label>
+      <label class="flex flex-col font-semibold text-sm">
+        Messaggio:
+        <textarea id="messaggio" required rows="4" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base"></textarea>
+      </label>
+      <button type="submit" class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">Invia</button>
+    </form>
+  </div>
+</section>
+
 <footer class="bg-[#d9cbb1] text-center p-4 font-semibold">© 2025 Casa Vacanze Brasile</footer>
+
+<!-- POPUP SCONTO MODERNO -->
+<div class="popup-bg" id="popup">
+  <div class="popup-anim" id="popupAnim">
+    <span class="close-popup-btn" id="closePopup" title="Chiudi popup">&times;</span>
+    <h3 class="text-2xl font-extrabold mb-2 text-[#bb9457]">🎉 Sconto Speciale!</h3>
+    <p id="popupText" class="mb-3 text-lg"></p>
+    <a href="#contatti" id="ctaSconto" class="cta">Contattaci ora per ottenere lo sconto</a>
+  </div>
+</div>
 
 <script>
 // Lightbox galleria
@@ -287,7 +226,7 @@ closeBtn.addEventListener('click', () => lightbox.style.display = 'none');
 window.addEventListener('keydown', e => e.key === 'Escape' && (lightbox.style.display = 'none'));
 lightbox.addEventListener('click', e => e.target === lightbox && (lightbox.style.display = 'none'));
 
-// SIMULATORE PREZZI + popup sconto dinamico
+// SIMULATORE PREZZI + popup sconto moderno
 function euroFormat(n) {
   return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -315,12 +254,129 @@ btnCamera.onclick = () => {
 };
 
 function showPopupSconto(riepilogo) {
-  document.getElementById('popupScontoText').innerHTML = riepilogo;
-  document.getElementById('popupSconto').style.display='flex';
+  document.getElementById('popupText').innerHTML = riepilogo;
+  document.getElementById('popup').style.display='flex';
   document.body.style.overflow='hidden';
 }
+document.getElementById('closePopup').onclick = function() {
+  document.getElementById('popup').style.display = 'none';
+  document.body.style.overflow = '';
+};
 
-// ... (il resto dello script rimane invariato, come nel file sorgente)
+formGruppi.addEventListener('submit', e => {
+  e.preventDefault();
+  const ppl = +document.getElementById('people').value;
+  const inD = new Date(document.getElementById('checkin').value),
+        outD = new Date(document.getElementById('checkout').value);
+  const loaderGruppi = document.getElementById('loaderGruppi');
+  const simResultGruppi = document.getElementById('simResultGruppi');
+  if (ppl<5||ppl>30||isNaN(inD)||isNaN(outD)||outD<=inD) return alert('Controlla valori');
+  loaderGruppi.style.display='flex'; simResultGruppi.textContent='';
+  setTimeout(()=> {
+    loaderGruppi.style.display='none';
+    const nights = Math.ceil((outD-inD)/(1000*60*60*24));
+    const monthIdx = inD.getMonth();
+    const alta = (monthIdx+1 >= 11 || monthIdx+1 <= 3);
+    const base = alta ? 28 : 21;
+    const steps = Math.floor((30-ppl)/4);
+    const ppp = +(base * Math.pow(1.12, steps)).toFixed(2);
+    const total = +(ppp*ppl*nights).toFixed(2);
+    const discount = nights>7 ? 4.5 : 0;
+    const scontoVal = discount ? +(total*discount/100).toFixed(2) : 0;
+    const final = discount ? +(total-scontoVal).toFixed(2) : total;
+    const seasonTxt = alta?'Alta stagione':'Bassa stagione';
+    const temp = TEMPERATURES[monthIdx];
+    const tempIcon = temp >= 26 ? "🌡️" : "☀️";
+    riepilogoBreve = discount ? `Ciao! Hai diritto a uno <b>sconto speciale</b> per <b>${nights} notti</b>: <span class="strikethrough">€${euroFormat(total)}</span> ora solo <span class="prezzo-sconto">€${euroFormat(final)}</span>!` : "";
+    simResultGruppi.innerHTML=`
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-2xl">${tempIcon}</span>
+        <span class="font-semibold">${MONTHS[monthIdx]}: ${temp}°C &middot; <span class="capitalize">${seasonTxt}</span></span>
+      </div>
+      <div>Prezzo per notte per persona: <span class="font-bold">€${euroFormat(ppp)}</span></div>
+      <div>
+        Prezzo totale gruppo (${ppl} pers, ${nights} notti): 
+        ${
+          discount
+            ? `<span class="strikethrough mr-2">€${euroFormat(total)}</span>
+               <span class="font-bold text-green-600">€${euroFormat(final)}</span>`
+            : `<span class="font-bold">€${euroFormat(final)}</span>`
+        }
+      </div>
+      ${
+        discount
+          ? `<div class="text-green-600 font-bold mt-2">(Risparmi €${euroFormat(scontoVal)})</div>`
+          : ""
+      }
+    `;
+    if (discount) showPopupSconto(riepilogoBreve);
+  },1500);
+});
+
+formCamera.addEventListener('submit', e => {
+  e.preventDefault();
+  const adulti = +document.getElementById('adulti').value;
+  const bambini = +document.getElementById('bambini').value;
+  const inD = new Date(document.getElementById('checkinCam').value),
+        outD = new Date(document.getElementById('checkoutCam').value);
+  const loaderCamera = document.getElementById('loaderCamera');
+  const simResultCamera = document.getElementById('simResultCamera');
+  if (adulti<1||adulti>2||bambini<0||bambini>5||isNaN(inD)||isNaN(outD)||outD<=inD) return alert('Controlla valori');
+  loaderCamera.style.display='flex'; simResultCamera.textContent='';
+  setTimeout(()=> {
+    loaderCamera.style.display='none';
+    const nights = Math.ceil((outD-inD)/(1000*60*60*24));
+    const monthIdx = inD.getMonth();
+    const alta = (monthIdx+1 >= 11 || monthIdx+1 <= 3);
+    const prezzoCamera = alta ? 54 : 43;
+    const prezzoBambino = 9;
+    const totalNotte = prezzoCamera + bambini*prezzoBambino;
+    const total = totalNotte * nights;
+    const discount = nights>7 ? 4.5 : 0;
+    const scontoVal = discount ? +(total*discount/100).toFixed(2) : 0;
+    const final = discount ? +(total-scontoVal).toFixed(2) : total;
+    const seasonTxt = alta?'Alta stagione':'Bassa stagione';
+    const temp = TEMPERATURES[monthIdx];
+    const tempIcon = temp >= 26 ? "🌡️" : "☀️";
+    riepilogoBreve = discount ? `Ciao! Hai diritto a uno <b>sconto speciale</b> per <b>${nights} notti</b>: <span class="strikethrough">€${euroFormat(total)}</span> ora solo <span class="prezzo-sconto">€${euroFormat(final)}</span>!` : "";
+    simResultCamera.innerHTML=`
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-2xl">${tempIcon}</span>
+        <span class="font-semibold">${MONTHS[monthIdx]}: ${temp}°C &middot; <span class="capitalize">${seasonTxt}</span></span>
+      </div>
+      <div>Prezzo per notte (fino a 2 adulti${bambini>0?` + ${bambini} bambino/i`:''}): <span class="font-bold">€${euroFormat(totalNotte)}</span></div>
+      <div>
+        Prezzo totale camera (${nights} notti): 
+        ${
+          discount
+            ? `<span class="strikethrough mr-2">€${euroFormat(total)}</span>
+               <span class="font-bold text-green-600">€${euroFormat(final)}</span>`
+            : `<span class="font-bold">€${euroFormat(final)}</span>`
+        }
+      </div>
+      ${
+        discount
+          ? `<div class="text-green-600 font-bold mt-2">(Risparmi €${euroFormat(scontoVal)})</div>`
+          : ""
+      }
+    `;
+    if (discount) showPopupSconto(riepilogoBreve);
+  },1500);
+});
+
+// Form contatti
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const nome = this.nome.value.trim();
+  const email = this.email.value.trim();
+  const messaggio = this.messaggio.value.trim();
+  if(!nome || !email || !messaggio){
+    alert('Compila tutti i campi.');
+    return;
+  }
+  alert(`Grazie ${nome}, il tuo messaggio è stato inviato! Ti risponderemo al più presto.`);
+  this.reset();
+});
 </script>
 </body>
 </html>
