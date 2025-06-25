@@ -5,34 +5,180 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🏡 Casa Vacanze Brasile</title>
 <script src="https://cdn.tailwindcss.com"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
-  body {font-family:'Poppins',sans-serif;background:#fef6f0;color:#4a3c31;}
-  .gallery {max-width:1200px;margin:40px auto 10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;}
-  .gallery-img {aspect-ratio: 4/3; width:100%; object-fit:cover; border-radius:1.1rem; border:3px solid #f3e9d2; box-shadow:0 4px 16px rgba(0,0,0,0.08); transition:transform .4s, box-shadow .3s, border-color .3s; cursor:zoom-in; background:#eee;}
-  .gallery-img:hover {transform:scale(1.07); box-shadow:0 8px 32px rgba(187,148,87,0.20); border-color:#bb9457;}
-  .card {background:white;border-radius:1rem;box-shadow:0 8px 16px rgba(0,0,0,0.1);padding:2.5rem;}
-  .loader2 {display:flex;justify-content:center;align-items:center;margin:1rem auto;}
-  .loader2 span {width:44px;height:44px;border:5px solid #f3e9d2;border-top:5px solid #bb9457;border-radius:50%;display:inline-block;animation:spin 1s linear infinite;}
-  @keyframes spin {100%{transform:rotate(360deg)}}
-  .popup-bg {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.55);display:none;justify-content:center;align-items:center;z-index:20000;}
-  .popup-anim {background:white;padding:2.2rem 2rem;border-radius:1.1rem;text-align:center;box-shadow:0 8px 40px #bb9457a6;position:relative;animation:popshow .45s cubic-bezier(.6,2,.4,1);}
-  @keyframes popshow {from{opacity:0;transform:scale(.8);} to{opacity:1;transform:scale(1);}}
-  .close-popup-btn {position:absolute;top:10px;right:18px;font-size:2rem;font-weight:700;color:#bbb;cursor:pointer;transition:.2s;}
-  .close-popup-btn:hover {color:#bb9457;}
-  .cta {display:inline-block;margin-top:1rem;padding:.6rem 1.2rem;background:#bb9457;color:#fef6f0;border-radius:.6rem;font-weight:700;text-decoration:none;}
-  .strikethrough {text-decoration: line-through; color: #bb9457;}
-  .prezzo-sconto {color:#15803d; font-weight:700;}
-  .form-title {text-align:center;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;}
-  .success-message {text-align:center; color:#15803d; font-weight:600; margin-top:1rem; display:none;}
-  .error-message {text-align:center; color:#b91c1c; font-weight:600; margin-top:1rem; display:none;}
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #fef6f0;
+    color: #4a3c31;
+  }
+
+  /* ----------------- GALLERY ----------------- */
+  .gallery {
+    max-width: 1200px;
+    margin: 40px auto 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+  }
+
+  .gallery-img {
+    aspect-ratio: 4/3;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 1.1rem;
+    border: 3px solid #f3e9d2;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform .4s, box-shadow .3s, border-color .3s;
+    cursor: zoom-in;
+    background: #eee;
+  }
+
+  .gallery-img:hover {
+    transform: scale(1.07);
+    box-shadow: 0 8px 32px rgba(187, 148, 87, 0.20);
+    border-color: #bb9457;
+  }
+
+  /* ----------------- CARD / FORM ----------------- */
+  .card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.10);
+    padding: 2.5rem;
+  }
+
+  .form-title {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .success-message,
+  .error-message {
+    text-align: center;
+    font-weight: 600;
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .success-message { color: #15803d; }
+  .error-message   { color: #b91c1c; }
+
+  /* ----------------- LOADER ----------------- */
+  .loader2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem auto;
+  }
+
+  .loader2 span {
+    width: 44px;
+    height: 44px;
+    border: 5px solid #f3e9d2;
+    border-top: 5px solid #bb9457;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  /* ----------------- POPUP ----------------- */
+  .popup-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.55);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+  }
+
+  .popup-anim {
+    background: #fff;
+    padding: 2.2rem 2rem;
+    border-radius: 1.1rem;
+    text-align: center;
+    box-shadow: 0 8px 40px #bb9457a6;
+    position: relative;
+    animation: popshow .45s cubic-bezier(.6, 2, .4, 1);
+  }
+
+  @keyframes popshow {
+    from { opacity: 0; transform: scale(.8); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .close-popup-btn {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #bbb;
+    cursor: pointer;
+    transition: .2s;
+  }
+
+  .close-popup-btn:hover { color: #bb9457; }
+
+  .cta {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: .6rem 1.2rem;
+    background: #bb9457;
+    color: #fef6f0;
+    border-radius: .6rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .strikethrough { text-decoration: line-through; color: #bb9457; }
+  .prezzo-sconto { color: #15803d; font-weight: 700; }
+
+  /* ----------------- PLACEHOLDER (–15%, normale) ----------------- */
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 85%;
+    font-weight: 400;
+  }
+
+  /* ----------------- TEXTAREA “MESSAGGIO” PIÙ LARGA ----------------- */
+  /* Aggiungi questa regola nel tuo file CSS */
+
+
+  #messaggio {
+    width: 105%;
+    max-width: 100%;
+    resize: vertical;   /* solo verticale */
+  }
+
+  /* Testo inserito dall’utente: stessa dimensione del placeholder,
+   nero più soft, peso normale */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea {
+  font-size: .95rem;   
+  font-weight: 400;    
+  color: #434040; 
+}
+
 </style>
+
+
 </head>
 <body>
 <!-- HERO SECTION -->
 <section style="width:100vw; height:420px; overflow:hidden; border-radius:0 0 28px 28px; box-shadow:0 6px 18px rgba(0,0,0,0.18); position:relative;">
   <img
-    src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1500&q=80"
+    src="https://i.postimg.cc/BQqXMQTr/porto-seguro.jpg"
     alt="Spiaggia tropicale a Porto Seguro Bahia Brasile"
     style="width:100vw; height:100%; object-fit:cover; display:block;"
     loading="eager"
@@ -55,21 +201,38 @@
 
 <!-- GALLERIA -->
 <section id="galleria" class="gallery">
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1519985176271-adb1088fa94c?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
-  <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+
+  <img src="https://i.postimg.cc/qMZXdmdw/Whats-App-Image-2025-06-17-at-21-06-32.jpg" class="gallery-img" alt="Casa retro">
+  <img src="https://i.postimg.cc/hPnNdtJ6/Whats-App-Image-2025-06-17-at-20-34-59-2.jpg" class="gallery-img" alt="Giardino fronte">
+  <img src="https://i.postimg.cc/bvg7ycYW/Whats-App-Image-2025-06-18-at-18-57-16.jpg" class="gallery-img" alt="Casa fronte">
+  <img src="https://i.postimg.cc/QdT5ZhmN/Whats-App-Image-2025-06-17-at-21-06-31-5.jpg" class="gallery-img" alt="piscina">
+  <img src="https://i.postimg.cc/ZnnB7S0S/Whats-App-Image-2025-06-17-at-21-06-39-2.jpg" class="gallery-img" alt="piscina di notte">
+  <img src="https://i.postimg.cc/J4tYJHrT/Whats-App-Image-2025-06-17-at-20-35-03-4.jpg" class="gallery-img" alt="giardino">
+  <img src="https://i.postimg.cc/W1k9YRJg/Whats-App-Image-2025-06-17-at-21-06-35-2.jpg" class="gallery-img" alt="entrata">
+  <img src="https://i.postimg.cc/T110rB6y/Whats-App-Image-2025-06-17-at-21-06-39-3.jpg" class="gallery-img" alt="piscina notte">
+  <img src="https://i.postimg.cc/wBbQ90Jg/Whats-App-Image-2025-06-17-at-21-06-35.jpg" class="gallery-img" alt="palme">
+  
+</section>
+
+<!-- DESCRIZIONE -->
+<section id="descr1" class="max-w-3xl mx-auto my-10 px-4">
+  <h2 class="text-xl font-bold mb-2">I Servizi della Casa</h2>
+  <p>
+    🛏️ 12 camere spaziose arredate con gusto, ideali per ospitare gruppi grandi o piccoli<br>
+    🚿 10 bagni moderni per garantire privacy e comodità a tutti<br>
+    🏊‍♀️ Piscina privata con luci a LED, perfetta anche per rilassarsi di sera<br>
+    🔥 Area gourmet con barbecue, per cene in compagnia all’aperto<br>
+    🍽️ Cucina attrezzata, per preparare pasti in autonomia come a casa<br>
+    🛋️ Spazi comuni ampi, per stare insieme senza rinunciare al comfort<br>
+    🌿 Giardino curato, ideale per momenti di relax all’aperto<br>
+    📶 Wi-Fi veloce, per restare sempre connessi<br>
+    ❄️ Aria condizionata in tutte le stanze, per il massimo comfort<br>
+    📺 TV, lavatrice e tutto il necessario per sentirsi davvero a casa<br>
+    🧼 Servizio di pulizia su richiesta, per una vacanza senza stress<br>
+    ☕ Colazioni disponibili su richiesta, comode e gustose
+    
+    
+  </p>
 </section>
 
 <!-- Lightbox -->
@@ -112,7 +275,7 @@
     </form>
     <!-- Form Camera -->
     <form id="formCamera" class="flex flex-col gap-3 hidden">
-      <div class="form-title">Simulatore prezzi</div>
+
       <label class="flex flex-col font-semibold text-sm">
         Adulti (1-2):
         <input type="number" id="adulti" min="1" max="2" value="2" placeholder="Inserisci numero adulti"
@@ -177,6 +340,16 @@
       <p>Struttura molto accogliente, forse la piscina un po' piccola per gruppi grandi, ma pulizia e comfort eccellenti. Esperienza positiva!</p>
     </div>
   </div>
+
+</section>
+<!-- GALLERIA -->
+<section id="galleria" class="gallery">
+  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
 </section>
 
 <!-- CONTATTI -->
@@ -185,19 +358,19 @@
     <div class="form-title">Contatti</div>
     <form id="contactForm" class="flex flex-col gap-3">
       <label class="flex flex-col font-semibold text-sm">
-        Nome*:
+        Nome*
         <input type="text" id="nome" name="nome" required placeholder="Il tuo nome" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
       </label>
       <label class="flex flex-col font-semibold text-sm">
-        Email*:
+        Email*
         <input type="email" id="email" name="email" required placeholder="La tua email" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
       </label>
       <label class="flex flex-col font-semibold text-sm">
-        Telefono (opzionale):
+        Telefono (opzionale)
         <input type="tel" id="telefono" name="telefono" placeholder="Il tuo numero di telefono" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
       </label>
       <label class="flex flex-col font-semibold text-sm">
-        Messaggio*:
+        Messaggio*
         <textarea id="messaggio" name="messaggio" required rows="4" placeholder="Contattaci per ottenere lo sconto" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base"></textarea>
       </label>
       <button type="submit" class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">Invia</button>
@@ -212,6 +385,18 @@
   </div>
 </section>
 
+</section>
+<!-- GALLERIA -->
+<section id="galleria" class="gallery">
+  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1465156799763-2c087c332922?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+  <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80" class="gallery-img" alt="">
+</section>
+
+
 <footer class="bg-[#d9cbb1] text-center p-4 font-semibold">© 2025 Casa Vacanze Brasile</footer>
 
 <!-- POPUP SCONTO MODERNO -->
@@ -224,206 +409,264 @@
   </div>
 </div>
 
+
 <script>
-// Lightbox galleria
-const lightbox = document.getElementById('lightbox');
-const lbImg = lightbox.querySelector('img');
-const closeBtn = lightbox.querySelector('.close-btn');
-document.querySelectorAll('.gallery-img').forEach(i => i.addEventListener('click', () => {
-  lightbox.style.display = 'flex';
-  lbImg.src = i.src;
-}));
-closeBtn.addEventListener('click', () => lightbox.style.display = 'none');
-window.addEventListener('keydown', e => e.key === 'Escape' && (lightbox.style.display = 'none'));
-lightbox.addEventListener('click', e => e.target === lightbox && (lightbox.style.display = 'none'));
-
-// Simulatore prezzi e popup
-function euroFormat(n) {
-  return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-const TEMPERATURES = [30,30,30,29,28,27,26,26,27,28,29,30];
-const MONTHS = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
-let riepilogoBreve = "";
-
-const btnGruppi = document.getElementById('btnGruppi');
-const btnCamera = document.getElementById('btnCamera');
-const formGruppi = document.getElementById('formGruppi');
-const formCamera = document.getElementById('formCamera');
-btnGruppi.onclick = () => {
-  btnGruppi.classList.add('bg-[#bb9457]','text-white');
-  btnCamera.classList.remove('bg-[#bb9457]','text-white');
-  btnCamera.classList.add('bg-gray-200');
-  formGruppi.classList.remove('hidden');
-  formCamera.classList.add('hidden');
-};
-btnCamera.onclick = () => {
-  btnCamera.classList.add('bg-[#bb9457]','text-white');
-  btnGruppi.classList.remove('bg-[#bb9457]','text-white');
-  btnGruppi.classList.add('bg-gray-200');
-  formCamera.classList.remove('hidden');
-  formGruppi.classList.add('hidden');
-};
-
-function showPopupSconto(riepilogo) {
-  document.getElementById('popupText').innerHTML = riepilogo;
-  document.getElementById('popup').style.display='flex';
-  document.body.style.overflow='hidden';
-}
-document.getElementById('closePopup').onclick = function() {
-  document.getElementById('popup').style.display = 'none';
-  document.body.style.overflow = '';
-};
-
-formGruppi.addEventListener('submit', e => {
-  e.preventDefault();
-  const ppl = +document.getElementById('people').value;
-  const inD = new Date(document.getElementById('checkin').value),
-        outD = new Date(document.getElementById('checkout').value);
-  const loaderGruppi = document.getElementById('loaderGruppi');
-  const simResultGruppi = document.getElementById('simResultGruppi');
-  if (ppl<5||ppl>30||isNaN(inD)||isNaN(outD)||outD<=inD) return alert('Controlla valori');
-  loaderGruppi.style.display='flex'; simResultGruppi.textContent='';
-  setTimeout(()=> {
-    loaderGruppi.style.display='none';
-    const nights = Math.ceil((outD-inD)/(1000*60*60*24));
-    const monthIdx = inD.getMonth();
-    const alta = (monthIdx+1 >= 11 || monthIdx+1 <= 3);
-    const base = alta ? 28 : 21;
-    const steps = Math.floor((30-ppl)/4);
-    const ppp = +(base * Math.pow(1.12, steps)).toFixed(2);
-    const total = +(ppp*ppl*nights).toFixed(2);
-    const discount = nights>7 ? 4.5 : 0;
-    const scontoVal = discount ? +(total*discount/100).toFixed(2) : 0;
-    const final = discount ? +(total-scontoVal).toFixed(2) : total;
-    const seasonTxt = alta?'Alta stagione':'Bassa stagione';
-    const temp = TEMPERATURES[monthIdx];
-    const tempIcon = temp >= 26 ? "🌡️" : "☀️";
-    riepilogoBreve = discount ? `Ciao! Hai diritto a uno <b>sconto speciale</b> per <b>${nights} notti</b>: <span class="strikethrough">€${euroFormat(total)}</span> ora solo <span class="prezzo-sconto">€${euroFormat(final)}</span>!` : "";
-    simResultGruppi.innerHTML=`
-      <div class="flex items-center gap-2 mb-2">
-        <span class="text-2xl">${tempIcon}</span>
-        <span class="font-semibold">${MONTHS[monthIdx]}: ${temp}°C &middot; <span class="capitalize">${seasonTxt}</span></span>
-      </div>
-      <div>Prezzo per notte per persona: <span class="font-bold">€${euroFormat(ppp)}</span></div>
-      <div>
-        Prezzo totale gruppo (${ppl} pers, ${nights} notti): 
-        ${
-          discount
-            ? `<span class="strikethrough mr-2">€${euroFormat(total)}</span>
-               <span class="font-bold text-green-600">€${euroFormat(final)}</span>`
-            : `<span class="font-bold">€${euroFormat(final)}</span>`
-        }
-      </div>
-      ${
-        discount
-          ? `<div class="text-green-600 font-bold mt-2">(Risparmi €${euroFormat(scontoVal)})</div>`
-          : ""
-      }
-    `;
-    if (discount) showPopupSconto(riepilogoBreve);
-  },1500);
-});
-
-formCamera.addEventListener('submit', e => {
-  e.preventDefault();
-  const adulti = +document.getElementById('adulti').value;
-  const bambini = +document.getElementById('bambini').value;
-  const inD = new Date(document.getElementById('checkinCam').value),
-        outD = new Date(document.getElementById('checkoutCam').value);
-  const loaderCamera = document.getElementById('loaderCamera');
-  const simResultCamera = document.getElementById('simResultCamera');
-  if (adulti<1||adulti>2||bambini<0||bambini>2||isNaN(inD)||isNaN(outD)||outD<=inD) return alert('Controlla valori');
-  loaderCamera.style.display='flex'; simResultCamera.textContent='';
-  setTimeout(()=> {
-    loaderCamera.style.display='none';
-    const nights = Math.ceil((outD-inD)/(1000*60*60*24));
-    const monthIdx = inD.getMonth();
-    const alta = (monthIdx+1 >= 11 || monthIdx+1 <= 3);
-    const prezzoCamera = alta ? 54 : 43;
-    const prezzoBambino = 9;
-    const totalNotte = prezzoCamera + bambini*prezzoBambino;
-    const total = totalNotte * nights;
-    const discount = nights>7 ? 4.5 : 0;
-    const scontoVal = discount ? +(total*discount/100).toFixed(2) : 0;
-    const final = discount ? +(total-scontoVal).toFixed(2) : total;
-    const seasonTxt = alta?'Alta stagione':'Bassa stagione';
-    const temp = TEMPERATURES[monthIdx];
-    const tempIcon = temp >= 26 ? "🌡️" : "☀️";
-    riepilogoBreve = discount ? `Ciao! Hai diritto a uno <b>sconto speciale</b> per <b>${nights} notti</b>: <span class="strikethrough">€${euroFormat(total)}</span> ora solo <span class="prezzo-sconto">€${euroFormat(final)}</span>!` : "";
-    simResultCamera.innerHTML=`
-      <div class="flex items-center gap-2 mb-2">
-        <span class="text-2xl">${tempIcon}</span>
-        <span class="font-semibold">${MONTHS[monthIdx]}: ${temp}°C &middot; <span class="capitalize">${seasonTxt}</span></span>
-      </div>
-      <div>Prezzo per notte (fino a 2 adulti${bambini>0?` + ${bambini} bambino/i`:''}): <span class="font-bold">€${euroFormat(totalNotte)}</span></div>
-      <div>
-        Prezzo totale camera (${nights} notti): 
-        ${
-          discount
-            ? `<span class="strikethrough mr-2">€${euroFormat(total)}</span>
-               <span class="font-bold text-green-600">€${euroFormat(final)}</span>`
-            : `<span class="font-bold">€${euroFormat(final)}</span>`
-        }
-      </div>
-      ${
-        discount
-          ? `<div class="text-green-600 font-bold mt-2">(Risparmi €${euroFormat(scontoVal)})</div>`
-          : ""
-      }
-    `;
-    if (discount) showPopupSconto(riepilogoBreve);
-  },1500);
-});
-
-// Form contatti: Google Sheet + loader + placeholder popup sconto
-const contactForm = document.getElementById('contactForm');
-const loaderContact = document.getElementById('loaderContact');
-const successMessage = document.getElementById('successMessage');
-const errorMessage = document.getElementById('errorMessage');
-
-// Sostituisci con il TUO URL Apps Script pubblicato
-const scriptURL = "https://script.google.com/macros/s/AKfycbyqGsD1bQ-VcweqXUmjZBzOoP3g6ctMOcUECALxg6ok3RbGxkcX6qNiAGJpoNsQF3-Wjw/exec";
-
-contactForm.addEventListener('submit', async function(e) {
-  e.preventDefault();
-  loaderContact.style.display = 'flex';
-  successMessage.style.display = 'none';
-  errorMessage.style.display = 'none';
-
-  const formData = new FormData(contactForm);
-
-  try {
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      body: formData
-    });
-    if (response.ok) {
+  // ------------------------- LIGHTBOX GALLERIA -------------------------
+  const lightbox   = document.getElementById('lightbox');
+  const lbImg      = lightbox.querySelector('img');
+  const closeBtn   = lightbox.querySelector('.close-btn');
+  
+  document.querySelectorAll('.gallery-img').forEach(i =>
+    i.addEventListener('click', () => {
+      lightbox.style.display = 'flex';
+      lbImg.src = i.src;
+    })
+  );
+  
+  closeBtn.addEventListener('click', () => lightbox.style.display = 'none');
+  window.addEventListener('keydown', e => e.key === 'Escape' && (lightbox.style.display = 'none'));
+  lightbox.addEventListener('click', e => e.target === lightbox && (lightbox.style.display = 'none'));
+  
+  
+  // ------------------------- COSTANTI & UTILITY -------------------------
+  function euroFormat(n) {
+    return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  
+  const LOADER_DELAY  = 2000;                        // (ms) visibilità minima loader
+  const MAX_MSG_CHARS = 700;                         // limite messaggio
+  
+  const TEMPERATURES  = [30,30,30,29,28,27,26,26,27,28,29,30];
+  const MONTHS        = ["Gennaio","Febbraio","Marzo","Aprile","Maggio",
+                         "Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+  
+  let riepilogoBreve = "";
+  
+  
+  // ------------------------- TAB GRUPPI / CAMERA -------------------------
+  const btnGruppi   = document.getElementById('btnGruppi');
+  const btnCamera   = document.getElementById('btnCamera');
+  const formGruppi  = document.getElementById('formGruppi');
+  const formCamera  = document.getElementById('formCamera');
+  
+  btnGruppi.onclick = () => {
+    btnGruppi.classList.add('bg-[#bb9457]','text-white');
+    btnCamera.classList.remove('bg-[#bb9457]','text-white');
+    btnCamera.classList.add('bg-gray-200');
+    formGruppi.classList.remove('hidden');
+    formCamera.classList.add('hidden');
+  };
+  
+  btnCamera.onclick = () => {
+    btnCamera.classList.add('bg-[#bb9457]','text-white');
+    btnGruppi.classList.remove('bg-[#bb9457]','text-white');
+    btnGruppi.classList.add('bg-gray-200');
+    formCamera.classList.remove('hidden');
+    formGruppi.classList.add('hidden');
+  };
+  
+  
+  // ------------------------- POPUP SCONTO -------------------------
+  function showPopupSconto(riepilogo) {
+    document.getElementById('popupText').innerHTML = riepilogo;
+    document.getElementById('popup').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  
+  document.getElementById('closePopup').onclick = () => {
+    document.getElementById('popup').style.display = 'none';
+    document.body.style.overflow = '';
+  };
+  
+  
+  // ------------------------- FORM GRUPPI -------------------------
+  formGruppi.addEventListener('submit', e => {
+    e.preventDefault();
+  
+    const ppl   = +document.getElementById('people').value;
+    const inD   = new Date(document.getElementById('checkin').value);
+    const outD  = new Date(document.getElementById('checkout').value);
+  
+    const loaderGruppi   = document.getElementById('loaderGruppi');
+    const simResultGruppi = document.getElementById('simResultGruppi');
+  
+    if (ppl < 5 || ppl > 30 || isNaN(inD) || isNaN(outD) || outD <= inD)
+      return alert('Controlla valori');
+  
+    loaderGruppi.style.display = 'flex';
+    simResultGruppi.textContent = '';
+  
+    setTimeout(() => {
+      loaderGruppi.style.display = 'none';
+  
+      const nights    = Math.ceil((outD - inD) / (1000 * 60 * 60 * 24));
+      const monthIdx  = inD.getMonth();
+      const alta      = (monthIdx + 1 >= 11 || monthIdx + 1 <= 3);
+      const base      = alta ? 28 : 21;
+      const steps     = Math.floor((30 - ppl) / 4);
+      const ppp       = +(base * Math.pow(1.12, steps)).toFixed(2);
+      const total     = +(ppp * ppl * nights).toFixed(2);
+      const discount  = nights > 7 ? 4.5 : 0;
+      const scontoVal = discount ? +(total * discount / 100).toFixed(2) : 0;
+      const final     = discount ? +(total - scontoVal).toFixed(2) : total;
+      const seasonTxt = alta ? 'Alta stagione' : 'Bassa stagione';
+      const temp      = TEMPERATURES[monthIdx];
+      const tempIcon  = temp >= 26 ? "🌡️" : "☀️";
+  
+      riepilogoBreve = discount
+        ? `Hai sbloccato lo <b>sconto speciale</b> per <b>${nights} notti</b>: ` +
+          `<span class="strikethrough">€${euroFormat(total)}</span> ora solo ` +
+          `<span class="prezzo-sconto">€${euroFormat(final)}</span>!`
+        : "";
+  
+      simResultGruppi.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-2xl">${tempIcon}</span>
+          <span class="font-semibold">${MONTHS[monthIdx]}: ${temp}°C &middot; <span class="capitalize">${seasonTxt}</span></span>
+        </div>
+        <div>Prezzo per notte per persona: <span class="font-bold">€${euroFormat(ppp)}</span></div>
+        <div>
+          Prezzo totale gruppo (${ppl} pers, ${nights} notti):
+          ${ discount
+              ? `<span class="strikethrough mr-2">€${euroFormat(total)}</span>
+                 <span class="font-bold text-green-600">€${euroFormat(final)}</span>`
+              : `<span class="font-bold">€${euroFormat(final)}</span>` }
+        </div>
+        ${ discount ? `<div class="text-green-600 font-bold mt-2">(Risparmi €${euroFormat(scontoVal)})</div>` : "" }
+      `;
+  
+      if (discount) showPopupSconto(riepilogoBreve);
+    }, LOADER_DELAY);      // 2 s visibilità loader
+  });
+  
+  
+  // ------------------------- FORM CAMERA -------------------------
+  formCamera.addEventListener('submit', e => {
+    e.preventDefault();
+  
+    const adulti   = +document.getElementById('adulti').value;
+    const bambini  = +document.getElementById('bambini').value;
+    const inD      = new Date(document.getElementById('checkinCam').value);
+    const outD     = new Date(document.getElementById('checkoutCam').value);
+  
+    const loaderCamera    = document.getElementById('loaderCamera');
+    const simResultCamera = document.getElementById('simResultCamera');
+  
+    if (adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2 || isNaN(inD) || isNaN(outD) || outD <= inD)
+      return alert('Controlla valori');
+  
+    loaderCamera.style.display = 'flex';
+    simResultCamera.textContent = '';
+  
+    setTimeout(() => {
+      loaderCamera.style.display = 'none';
+  
+      const nights       = Math.ceil((outD - inD) / (1000 * 60 * 60 * 24));
+      const monthIdx     = inD.getMonth();
+      const alta         = (monthIdx + 1 >= 11 || monthIdx + 1 <= 3);
+      const prezzoCamera = alta ? 54 : 43;
+      const prezzoBambino = 9;
+  
+      const totalNotte  = prezzoCamera + bambini * prezzoBambino;
+      const total       = totalNotte * nights;
+      const discount    = nights > 7 ? 4.5 : 0;
+      const scontoVal   = discount ? +(total * discount / 100).toFixed(2) : 0;
+      const final       = discount ? +(total - scontoVal).toFixed(2) : total;
+      const seasonTxt   = alta ? 'Alta stagione' : 'Bassa stagione';
+      const temp        = TEMPERATURES[monthIdx];
+      const tempIcon    = temp >= 26 ? "🌡️" : "☀️";
+  
+      riepilogoBreve = discount
+        ? `Ciao! Hai diritto a uno <b>sconto speciale</b> per <b>${nights} notti</b>: ` +
+          `<span class="strikethrough">€${euroFormat(total)}</span> ora solo ` +
+          `<span class="prezzo-sconto">€${euroFormat(final)}</span>!`
+        : "";
+  
+      simResultCamera.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-2xl">${tempIcon}</span>
+          <span class="font-semibold">${MONTHS[monthIdx]}: ${temp}°C &middot; <span class="capitalize">${seasonTxt}</span></span>
+        </div>
+        <div>Prezzo per notte (fino a 2 adulti${bambini > 0 ? ` + ${bambini} bambino/i` : ''}): <span class="font-bold">€${euroFormat(totalNotte)}</span></div>
+        <div>
+          Prezzo totale camera (${nights} notti):
+          ${ discount
+              ? `<span class="strikethrough mr-2">€${euroFormat(total)}</span>
+                 <span class="font-bold text-green-600">€${euroFormat(final)}</span>`
+              : `<span class="font-bold">€${euroFormat(final)}</span>` }
+        </div>
+        ${ discount ? `<div class="text-green-600 font-bold mt-2">(Risparmi €${euroFormat(scontoVal)})</div>` : "" }
+      `;
+  
+      if (discount) showPopupSconto(riepilogoBreve);
+    }, LOADER_DELAY);      // 2 s visibilità loader
+  });
+  
+  
+  // ------------------------- FORM CONTATTI -------------------------
+  const contactForm     = document.getElementById('contactForm');
+  const loaderContact   = document.getElementById('loaderContact');
+  const successMessage  = document.getElementById('successMessage');
+  const errorMessage    = document.getElementById('errorMessage');
+  
+  // imposta limite caratteri al textarea (se non già presente nell'HTML)
+  const msgField = document.getElementById('messaggio');
+  msgField.setAttribute('maxlength', MAX_MSG_CHARS);
+  
+  // URL Apps Script pubblicato
+  const scriptURL = "https://script.google.com/macros/s/AKfycbyqGsD1bQ-VcweqXUmjZBzOoP3g6ctMOcUECALxg6ok3RbGxkcX6qNiAGJpoNsQF3-Wjw/exec";
+  
+  contactForm.addEventListener('submit', async e => {
+    e.preventDefault();
+  
+    loaderContact.style.display = 'flex';
+    successMessage.style.display = 'none';
+    errorMessage.style.display = 'none';
+  
+    const formData  = new FormData(contactForm);
+    const startTime = Date.now();
+  
+    try {
+      const response = await fetch(scriptURL, { method: 'POST', body: formData });
+  
+      // assicura che il loader resti visibile per almeno LOADER_DELAY
+      const elapsed = Date.now() - startTime;
+      if (elapsed < LOADER_DELAY)
+        await new Promise(r => setTimeout(r, LOADER_DELAY - elapsed));
+  
       loaderContact.style.display = 'none';
-      successMessage.style.display = 'block';
-      contactForm.reset();
-    } else {
-      throw new Error('Errore di rete');
+  
+      if (response.ok) {
+        successMessage.style.display = 'block';
+        contactForm.reset();
+      } else {
+        throw new Error('Errore di rete');
+      }
+    } catch {
+      loaderContact.style.display = 'none';
+      errorMessage.style.display = 'block';
     }
-  } catch (err) {
-    loaderContact.style.display = 'none';
-    errorMessage.style.display = 'block';
-  }
-});
-
-// INTEGRAZIONE: click sul pulsante popup sconto
-document.getElementById('ctaSconto').addEventListener('click', function(e) {
-  e.preventDefault();
-  document.getElementById('popup').style.display = 'none';
-  document.body.style.overflow = '';
-  const messaggio = document.getElementById('messaggio');
-  if (messaggio) {
-    messaggio.placeholder = "Contattaci per ottenere lo sconto";
-    messaggio.focus();
-  }
-  document.getElementById('contatti').scrollIntoView({behavior: "smooth"});
-});
-</script>
-</body>
-</html>
+  });
+  
+  
+  // ------------------------- CTA POPUP SCONTO → FORM -------------------------
+  document.getElementById('ctaSconto').addEventListener('click', e => {
+    e.preventDefault();
+  
+    document.getElementById('popup').style.display = 'none';
+    document.body.style.overflow = '';
+  
+    const messaggio = document.getElementById('messaggio');
+    if (messaggio) {
+      messaggio.placeholder = "Contattaci per ottenere lo sconto";
+      messaggio.focus();
+    }
+  
+    document.getElementById('contatti').scrollIntoView({ behavior: "smooth" });
+  });
+  </script>
+  </body>
+  </html>
+  
 
 
