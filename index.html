@@ -316,14 +316,18 @@ function isAltaStagione(dt) {
   const m = dt.getMonth() + 1;
   return (m >= 11 || m <= 3);
 }
+// --- sostituisci solo questa funzione ---
 function prezzoGruppo(persone, giorni, checkin) {
   const date = new Date(checkin);
   const alta = isAltaStagione(date);
   let prezzoBase = alta ? 29 : 22;
-  if (!alta && persone < 30) {
+
+  // ↑ MODIFICA → incremento sempre, in qualunque stagione
+  if (persone < 30) {
     const gruppi4 = Math.floor((30 - persone) / 4);
     prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
   }
+
   return { prezzoBase, totale: prezzoBase * persone * giorni, alta };
 }
 function prezzoCamera(adulti, bambini, giorni, checkin) {
