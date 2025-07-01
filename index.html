@@ -453,7 +453,7 @@ document.getElementById('formCamera').onsubmit = function(e) {
       <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
         <div class="mb-2"><b style="color:#bb9457;">${adulti} adulti${bambini>0?` + ${bambini} bambini`:''}</b> | <b>${giorni} notti</b><br>
         Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-        <div class="mb-2">Prezzo a notte per camera: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b> ${alta ? '<span style="color:#e63946">(alta stagione)</span>' : '<span style="color:#15803d">(bassa stagione)</span>'}</div>
+       <div class="mb-2">Prezzo a notte per camera: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
         ${supplemento>0?`<div class="mb-2">Supplemento bambini: <b style="color:#15803d;">+${formatEuro(supplemento)}</b></div>`:""}
         <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
