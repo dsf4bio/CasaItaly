@@ -398,7 +398,16 @@ document.getElementById('formGruppi').onsubmit = function(e) {
  <div class="mb-2">Prezzo medio a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
         <div class="mb-2">Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
-
+    
+    
+if(sconto.risparmio > 0) {
+  riepilogo += `
+    <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+    <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+    <span class="risparmio">Risparmi ${formatEuro(sconto.risparmio)}</span></div>
+    <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+  `;
+}
    
   
 
@@ -448,6 +457,14 @@ document.getElementById('formCamera').onsubmit = function(e) {
         <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
     
+    if(sconto.risparmio > 0) {
+  riepilogo += `
+    <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+    <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+    <span class="risparmio">Risparmi ${formatEuro(sconto.risparmio)}</span></div>
+    <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+  `;
+}
     
     
     riepilogo += `
