@@ -268,7 +268,9 @@
   <div class="carousel-dots" id="carousel-dots"></div>
 </div>
 
+
 // --- Lightbox immagini ---
+
 document.querySelectorAll('.gallery-img').forEach(img => {
   img.onclick = () => {
     document.getElementById('lightbox').style.display = 'flex';
@@ -421,8 +423,9 @@ document.getElementById('formGruppi').onsubmit = function(e) {
   }, 700);
 };
 
-document.getElementById('formCamera').onsubmit = function(e) {
-  e.preventDefault();
+
+
+
   const adulti = parseInt(document.getElementById('adulti').value, 10);
   const bambini = parseInt(document.getElementById('bambini').value, 10);
   const checkin = document.getElementById('checkinCam').value;
@@ -475,7 +478,7 @@ document.getElementById('formCamera').onsubmit = function(e) {
     `;
     result.innerHTML = riepilogo;
   }, 700);
-};
+}; 
 
 // --- Invio form contatti a Google Sheet e via email ---
 document.getElementById('contactForm').onsubmit = async function(e) {
