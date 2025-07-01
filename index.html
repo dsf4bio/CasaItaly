@@ -261,22 +261,21 @@
     </form>
   </div>
 </section>
-
 <!-- CAROSELLO IMMAGINI IN FONDO -->
 <div class="carousel-container" id="carousel">
   <div id="carousel-images"></div>
   <div class="carousel-dots" id="carousel-dots"></div>
 </div>
 
-
+<script>
 // --- Lightbox immagini ---
-
 document.querySelectorAll('.gallery-img').forEach(img => {
   img.onclick = () => {
     document.getElementById('lightbox').style.display = 'flex';
     document.querySelector('#lightbox img').src = img.src;
-  }
+  };
 });
+
 document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
 };
@@ -320,6 +319,7 @@ function isAltaStagione(dt) {
   const mese = dt.getMonth() + 1; // gennaio = 1
   return [11, 12, 1, 2, 3].includes(mese);
 }
+</script>
 
 function prezzoGruppo(persone, giorni, checkin) {
   const checkInDate = new Date(checkin);
@@ -423,9 +423,8 @@ document.getElementById('formGruppi').onsubmit = function(e) {
   }, 700);
 };
 
-
-
-
+document.getElementById('formCamera').onsubmit = function(e) {
+  e.preventDefault();
   const adulti = parseInt(document.getElementById('adulti').value, 10);
   const bambini = parseInt(document.getElementById('bambini').value, 10);
   const checkin = document.getElementById('checkinCam').value;
