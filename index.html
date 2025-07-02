@@ -270,38 +270,19 @@
 
 <script>
 // --- Funzioni helper ---
-
-function isAltaStagione(date) {
-  // Mesi alta stagione: nov(11), dic(12), gen(1), feb(2), mar(3)
-  const m = date.getMonth() + 1;
-  return [11, 12, 1, 2, 3].includes(m);
+function isAltaStagione(dt) {
+  const m = dt.getMonth() + 1;
+  return (m >= 11 || m <= 3);
 }
-
-function pluralize(n, singolare, plurale) {
-  return n === 1 ? singolare : plurale;
+function pluralize(n,s,p){ return n===1?s:p; }
+function formatEuro(x){ return x.toLocaleString('it-IT',{style:'currency',currency:'EUR'}); }
+function formatDateEu(d){ return new Date(d).toLocaleDateString('it-IT'); }
+function calcolaSconto(prezzo, giorni) {
+  if (giorni >= 8) { const s = Math.round(prezzo * 0.046); return {pieno:prezzo, scontato: Math.round(prezzo - s), risparmio: s}; }
+  return {pieno: prezzo, scontato: prezzo, risparmio: 0};
 }
+function scrollToContatti(){ document.getElementById('contatti').scrollIntoView({behavior:'smooth'}); }
 
-function formatDateEu(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-
-function formatEuro(num) {
-  return num.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' });
-}
-
-function calcolaSconto(totale, giorni) {
-  // Sconto del 10% per soggiorni di 8+ notti
-  if (giorni >= 8) {
-    const scontato = totale * 0.9;
-    return { pieno: totale, scontato, risparmio: totale - scontato };
-  }
-  return { pieno: totale, scontato: totale, risparmio: 0 };
-}
-
-function scrollToContatti() {
-  document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
-}
 
 // --- Lightbox immagini ---
 
