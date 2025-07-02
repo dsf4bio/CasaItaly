@@ -279,7 +279,85 @@ document.querySelectorAll('.gallery-img').forEach(img => {
 document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
 };
-// --- Simulatore prezzi logica aggiornata ---
+
+//--- Simultore prezzi gruppo---
+function prezzoGruppo(persone, giorni, checkin) {
+  const date = new Date(checkin);
+  const alta = isAltaStagione(date);
+  let prezzoBase = alta ? 29 : 22;
+
+  if (persone < 30) {
+    const gruppi4 = Math.floor((30 - persone) / 4);
+    prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
+  }
+
+  const totale = prezzoBase * persone * giorni;
+  return { prezzoBase, totale, alta };
+}
+
+document.getElementById('formGruppi').onsubmit = function (e) {
+  e.preventDefault();
+  const persone = parseInt(document.getElementById('people').value, 10);
+  const checkin = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+  const loader = document.getElementById('loaderGruppi');
+  const result = document.getElementById('simResultGruppi');
+  result.innerHTML = '';
+  loader.style.display = 'flex';
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+    if (!checkin || !checkout || persone < 5 || persone > 30) {
+      result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
+      return;
+    }
+
+    const giorni = (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
+    if (giorni < 1) {
+      result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
+      return;
+    }
+
+    const { prezzoBase, totale } = prezzoGruppo(persone, giorni, checkin);
+    const sconto = calcolaSconto(totale, giorni);
+
+    let riepilogo = `
+      <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
+        <div class="mb-2">
+          <b style="color:#bb9457;">${persone} ${pluralize(persone, "persona", "persone")}</b> | 
+          <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+          Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b>
+        </div>
+        <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
+        <div class="mb-2">Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+    `;
+
+    if (sconto.risparmio > 0) {
+      riepilogo += `
+        <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+        <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+        <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+      `;
+    }
+
+    riepilogo += `
+      <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
+      <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
+        <li>✔️ Residence videosorvegliato</li>
+        <li>✔️ Assistenza in lingua italiana</li>
+        <li>✔️ Piscina privata</li>
+        <li>✔️ Privacy e sicurezza</li>
+        <li>✔️ Offerta personalizzata</li>
+      </ul>
+      </div>
+    `;
+    result.innerHTML = riepilogo;
+  }, 700);
+};
+
+
+
+// --- Simulatore prezzi camea---
 function prezzoCamera(adulti, bambini, giorni, checkin, etaBambini) {
   const checkInDate = new Date(checkin);
   let totale = 0;
