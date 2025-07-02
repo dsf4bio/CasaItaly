@@ -268,118 +268,65 @@
   <div class="carousel-dots" id="carousel-dots"></div>
 </div>
 
-<!-- Lightbox -->
-<div id="lightbox" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:10000;">
-  <img src="" alt="Foto ingrandita" style="max-width:92vw; max-height:88vh; border-radius:1rem; box-shadow:0 4px 32px #000;">
-  <button class="close-btn" style="position:absolute; top:24px; right:38px; font-size:2.8rem; font-weight:700; color:#fff; background:none; border:none; cursor:pointer;">&times;</button>
-</div>
-
-<!-- SIMULATORE PREZZI -->
-<section id="simulatore" class="my-12">
-  <div class="card max-w-2xl mx-auto">
-    <div class="form-title">Simulatore prezzi</div>
-    <div class="flex gap-2 mb-5 justify-center">
-      <button type="button" id="btnGruppi" class="px-3 py-1 rounded font-bold bg-[#bb9457] text-white border-2 border-[#bb9457]">Gruppi numerosi</button>
-      <button type="button" id="btnCamera" class="px-3 py-1 rounded font-bold bg-gray-200 text-[#bb9457] border-2 border-[#bb9457]">Coppie/Famiglie</button>
-    </div>
-
-    <!-- Form Gruppi -->
-    <form id="formGruppi" class="flex flex-col gap-3">
-      <label class="flex flex-col font-semibold text-sm">
-        Persone (5–30):
-        <input type="number" id="people" min="5" max="30" value="30" placeholder="Inserisci numero persone" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Check‑in:
-        <input type="date" id="checkin" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Check‑out:
-        <input type="date" id="checkout" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <button type="submit" class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">Calcola</button>
-      <div class="loader2" id="loaderGruppi" style="display:none;"><span></span></div>
-      <div class="result mt-2 simResultGruppi font-semibold" id="simResultGruppi"></div>
-    </form>
-
-    <!-- Form Camera -->
-    <form id="formCamera" class="flex flex-col gap-3 hidden">
-      <label class="flex flex-col font-semibold text-sm">
-        Adulti (1-2):
-        <input type="number" id="adulti" min="1" max="2" value="2" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Bambini (0-12 anni):
-        <input type="number" id="bambini" min="0" max="2" value="0" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Check‑in:
-        <input type="date" id="checkinCam" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Check‑out:
-        <input type="date" id="checkoutCam" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <button type="submit" class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">Calcola</button>
-      <div class="loader2" id="loaderCamera" style="display:none;"><span></span></div>
-      <div class="result mt-2 simResultCamera font-semibold" id="simResultCamera"></div>
-    </form>
-
-    <div class="text-center mt-2"><small>📢 Prenota 8+ notti e risparmia subito!</small></div>
-  </div>
-</section>
-
 <script>
 // --- Lightbox immagini ---
 document.querySelectorAll('.gallery-img').forEach(img => {
-  img.addEventListener('click', () => {
-    const lightbox = document.getElementById('lightbox');
-    lightbox.style.display = 'flex';
-    lightbox.querySelector('img').src = img.src;
-  });
+  img.onclick = () => {
+    document.getElementById('lightbox').style.display = 'flex';
+    document.querySelector('#lightbox img').src = img.src;
+  }
 });
-document.querySelector('.close-btn').addEventListener('click', () => {
+document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
-});
+};
 
-// --- Gestione tab simulatore ---
+// --- Simulatore prezzi logica aggiornata ---
+function pluralize(n, sing, plur) {
+  return n === 1 ? sing : plur;
+}
+
+
+function formatEuro(x) {
+  return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
+}
+function formatDateEu(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('it-IT');
+}
 function setTab(tab) {
-  const formGruppi = document.getElementById('formGruppi');
-  const formCamera = document.getElementById('formCamera');
-  const btnGruppi = document.getElementById('btnGruppi');
-  const btnCamera = document.getElementById('btnCamera');
-
-  if (tab === "gruppi") {
-    formGruppi.classList.remove('hidden');
-    formCamera.classList.add('hidden');
-    btnGruppi.classList.add('bg-[#bb9457]', 'text-white');
-    btnGruppi.classList.remove('bg-gray-200', 'text-[#bb9457]');
-    btnCamera.classList.remove('bg-[#bb9457]', 'text-white');
-    btnCamera.classList.add('bg-gray-200', 'text-[#bb9457]');
+  if(tab === "gruppi") {
+    document.getElementById('formGruppi').classList.remove('hidden');
+    document.getElementById('formCamera').classList.add('hidden');
+    document.getElementById('btnGruppi').classList.add('bg-[#bb9457]','text-white');
+    document.getElementById('btnGruppi').classList.remove('bg-gray-200','text-[#bb9457]');
+    document.getElementById('btnCamera').classList.remove('bg-[#bb9457]','text-white');
+    document.getElementById('btnCamera').classList.add('bg-gray-200','text-[#bb9457]');
   } else {
-    formGruppi.classList.add('hidden');
-    formCamera.classList.remove('hidden');
-    btnCamera.classList.add('bg-[#bb9457]', 'text-white');
-    btnCamera.classList.remove('bg-gray-200', 'text-[#bb9457]');
-    btnGruppi.classList.remove('bg-[#bb9457]', 'text-white');
-    btnGruppi.classList.add('bg-gray-200', 'text-[#bb9457]');
+    document.getElementById('formGruppi').classList.add('hidden');
+    document.getElementById('formCamera').classList.remove('hidden');
+    document.getElementById('btnCamera').classList.add('bg-[#bb9457]','text-white');
+    document.getElementById('btnCamera').classList.remove('bg-gray-200','text-[#bb9457]');
+    document.getElementById('btnGruppi').classList.remove('bg-[#bb9457]','text-white');
+    document.getElementById('btnGruppi').classList.add('bg-gray-200','text-[#bb9457]');
   }
 }
-document.getElementById('btnGruppi').addEventListener('click', () => setTab("gruppi"));
-document.getElementById('btnCamera').addEventListener('click', () => setTab("camera"));
+document.getElementById('btnGruppi').onclick = () => setTab("gruppi");
+document.getElementById('btnCamera').onclick = () => setTab("camera");
 setTab("gruppi");
 
-// --- Funzione per determinare alta stagione ---
 function isAltaStagione(dt) {
+  // Alta stagione: novembre (11) a marzo (3)
   const m = dt.getMonth() + 1;
   return (m >= 11 || m <= 3);
 }
-
-// --- Calcolo prezzo per gruppi ---
+// --- sostituisci solo questa funzione ---
 function prezzoGruppo(persone, giorni, checkin) {
-  const alta = isAltaStagione(new Date(checkin));
+  const date = new Date(checkin);
+  const alta = isAltaStagione(date);
   let prezzoBase = alta ? 29 : 22;
 
+  // ↑ MODIFICA → incremento sempre, in qualunque stagione
   if (persone < 30) {
     const gruppi4 = Math.floor((30 - persone) / 4);
     prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
@@ -387,46 +334,36 @@ function prezzoGruppo(persone, giorni, checkin) {
 
   return { prezzoBase, totale: prezzoBase * persone * giorni, alta };
 }
-
-// --- Calcolo prezzo per coppie/famiglie ---
 function prezzoCamera(adulti, bambini, giorni, checkin) {
   const alta = isAltaStagione(new Date(checkin));
-  const prezzoBaseCamera = alta ? 57 : 45;
-  const supplementoPerPersona = 11;
-
-  const persone = adulti + bambini;
-  let totale = prezzoBaseCamera * giorni;
-
-  if (persone > 3) {
-    const extra = persone - 3;
-    totale += supplementoPerPersona * extra * giorni;
-  }
-
+  const prezzoBasePerAdulto = alta ? 56 : 44;
+  // Prezzo base proporzionato solo sugli adulti
+  const prezzoBaseTotale = prezzoBasePerAdulto * adulti;
+  // Supplemento fisso per ogni bambino
+  const supplementoBambini = 9 * bambini * giorni;
+  const totale = (prezzoBaseTotale * giorni) + supplementoBambini;
   return {
-    prezzoBase: prezzoBaseCamera,
+    prezzoBase: prezzoBasePerAdulto,
     totale,
     alta,
-    supplemento: persone > 3 ? supplementoPerPersona * (persone - 3) * giorni : 0
+    supplemento: supplementoBambini
   };
 }
 
-// --- Calcolo sconto per soggiorni lunghi ---
+
 function calcolaSconto(prezzo, giorni) {
   if (giorni >= 8) {
     const scontato = Math.round(prezzo * (1 - 0.046));
     const risparmio = Math.round(prezzo * 0.046);
     return { pieno: prezzo, scontato, risparmio };
+  } else {
+    return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
   }
-  return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
 }
-
-// --- Scroll alla sezione contatti ---
 function scrollToContatti() {
   document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
 }
-
-// --- Gestione submit form Gruppi ---
-document.getElementById('formGruppi').addEventListener('submit', function(e) {
+document.getElementById('formGruppi').onsubmit = function(e) {
   e.preventDefault();
   const persone = parseInt(document.getElementById('people').value, 10);
   const checkin = document.getElementById('checkin').value;
@@ -435,49 +372,33 @@ document.getElementById('formGruppi').addEventListener('submit', function(e) {
   const result = document.getElementById('simResultGruppi');
   result.innerHTML = '';
   loader.style.display = 'flex';
-
   setTimeout(() => {
     loader.style.display = 'none';
-
     if (!checkin || !checkout || persone < 5 || persone > 30) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
     }
-    const giorni = (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
+    const giorni = (new Date(checkout) - new Date(checkin)) / (1000*60*60*24);
     if (giorni < 1) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-
     const { prezzoBase, totale, alta } = prezzoGruppo(persone, giorni, checkin);
     const sconto = calcolaSconto(totale, giorni);
-
     let riepilogo = `
-      <div style="background:#fffbe6; border:2px solid #bb9457; padding:1.1rem 1rem 1.3rem 1rem; border-radius:1rem;">
-        <div class="mb-2">
-          <b style="color:#bb9457;">${persone} ${pluralize(persone, "persona", "persone")}</b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
-          Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b>
-        </div>
-        <div class="mb-2">
-          Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b>
-        </div>
-        <div class="mb-2">
-          Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b>
-        </div>
+      <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
+      <div class="mb-2"><b style="color:#bb9457;">${persone} ${pluralize(persone, "persona", "persone")}</b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+        Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
+        <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b> </div>
+        <div class="mb-2">Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
-
-    if (sconto.risparmio > 0) {
+    if(sconto.risparmio > 0) {
       riepilogo += `
-        <div class="mb-2">
-          <span class="strikethrough">${formatEuro(sconto.pieno)}</span>
-          <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-        </div>
-        <div class="mb-2" style="color:#15803d; font-weight:700;">
-          Offerta speciale per soggiorni lunghi!
-        </div>
+        <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+        <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+        <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
       `;
     }
-
     riepilogo += `
       <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
       <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
@@ -489,13 +410,11 @@ document.getElementById('formGruppi').addEventListener('submit', function(e) {
       </ul>
       </div>
     `;
-
     result.innerHTML = riepilogo;
   }, 700);
-});
+};
 
-// --- Gestione submit form Coppie/Famiglie ---
-document.getElementById('formCamera').addEventListener('submit', function(e) {
+document.getElementById('formCamera').onsubmit = function(e) {
   e.preventDefault();
   const adulti = parseInt(document.getElementById('adulti').value, 10);
   const bambini = parseInt(document.getElementById('bambini').value, 10);
@@ -505,69 +424,52 @@ document.getElementById('formCamera').addEventListener('submit', function(e) {
   const result = document.getElementById('simResultCamera');
   result.innerHTML = '';
   loader.style.display = 'flex';
-
   setTimeout(() => {
     loader.style.display = 'none';
-
     if (!checkin || !checkout || adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
     }
-    const giorni = (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
+    const giorni = (new Date(checkout) - new Date(checkin)) / (1000*60*60*24);
     if (giorni < 1) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-
     const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
-    const sconto = calcolaSconto(totale, giorni);
+const sconto = calcolaSconto(totale, giorni);
+let riepilogo = `
+  <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
+    <div class="mb-2"><b style="color:#bb9457;">
+      ${adulti} ${pluralize(adulti, "adulto", "adulti")}
+      ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
+    </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+    Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
+    <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
+    <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+`;
 
-    let riepilogo = `
-      <div style="background:#fffbe6; border:2px solid #bb9457; padding:1.1rem 1rem 1.3rem 1rem; border-radius:1rem;">
-        <div class="mb-2">
-          <b style="color:#bb9457;">
-            ${adulti} ${pluralize(adulti, "adulto", "adulti")}
-            ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
-          </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
-          Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b>
-        </div>
-        <div class="mb-2">
-          Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b>
-        </div>
-        <div class="mb-2">
-          Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b>
-        </div>
-    `;
+if(sconto.risparmio > 0) {
+  riepilogo += `
+    <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+    <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+    <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+  `;
+}
 
-    if (sconto.risparmio > 0) {
-      riepilogo += `
-        <div class="mb-2">
-          <span class="strikethrough">${formatEuro(sconto.pieno)}</span>
-          <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-        </div>
-        <div class="mb-2" style="color:#15803d; font-weight:700;">
-          Offerta speciale per soggiorni lunghi!
-        </div>
-      `;
-    }
-
-    riepilogo += `
-      <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
-      <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
-        <li>✔️ Residence videosorvegliato</li>
-        <li>✔️ Assistenza italiana</li>
-        <li>✔️ Piscina privata</li>
-        <li>✔️ Privacy e sicurezza</li>
-        <li>✔️ Offerta personalizzata</li>
-      </ul>
-      </div>
-    `;
-
-    result.innerHTML = riepilogo;
+riepilogo += `
+  <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
+  <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
+    <li>✔️ Residence videosorvegliato</li>
+    <li>✔️ Assistenza italiana</li>
+    <li>✔️ Piscina privata</li>
+    <li>✔️ Privacy e sicurezza</li>
+    <li>✔️ Offerta personalizzata</li>
+  </ul>
+  </div>
+`;
+result.innerHTML = riepilogo;
   }, 700);
-});
-
-
+};
 
 // --- Invio form contatti a Google Sheet e via email ---
 document.getElementById('contactForm').onsubmit = async function(e) {
