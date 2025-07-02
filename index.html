@@ -279,7 +279,6 @@ document.querySelectorAll('.gallery-img').forEach(img => {
 document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
 };
-
 // --- Simulatore prezzi logica aggiornata ---
 
 function prezzoCamera(adulti, bambini, giorni, checkin, etaBambini) {
@@ -343,10 +342,10 @@ document.getElementById('formCamera').onsubmit = function(e) {
       return;
     }
 
-    // Età bambini (dummy se non c'è campo età)
+    // Età bambini (dummy per ora — puoi collegare input in futuro)
     let etaBambini = [];
     if (bambini === 2) {
-      etaBambini = [10, 11]; // puoi sostituire con input futuro
+      etaBambini = [10, 11]; // modificabile se aggiungi input età
     }
 
     const { prezzoBase, totale, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin, etaBambini);
@@ -373,7 +372,6 @@ document.getElementById('formCamera').onsubmit = function(e) {
     }
 
     riepilogo += `
-
       <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
       <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
         <li>✔️ Residence videosorvegliato</li>
@@ -387,6 +385,9 @@ document.getElementById('formCamera').onsubmit = function(e) {
     result.innerHTML = riepilogo;
   }, 700);
 };
+
+
+
 
 document.getElementById('formCamera').onsubmit = function(e) {
   e.preventDefault();
