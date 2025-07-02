@@ -336,17 +336,21 @@ function prezzoGruppo(persone, giorni, checkin) {
 }
 function prezzoCamera(adulti, bambini, giorni, checkin) {
   const alta = isAltaStagione(new Date(checkin));
-  const prezzoBasePerAdulto = alta ? 56 : 44;
-  // Prezzo base proporzionato solo sugli adulti
-  const prezzoBaseTotale = prezzoBasePerAdulto * adulti;
-  // Supplemento fisso per ogni bambino
-  const supplementoBambini = 9 * bambini * giorni;
-  const totale = (prezzoBaseTotale * giorni) + supplementoBambini;
+  const prezzoBase = alta ? 57 : 45;
+  const persone = adulti + bambini;
+  let totale = 0;
+  let supplemento = 0;
+  if (persone <= 3) {
+    totale = prezzoBase * persone * giorni;
+  } else {
+    supplemento = 11 * (persone - 3) * giorni;
+    totale = prezzoBase * 3 * giorni + supplemento;
+  }
   return {
-    prezzoBase: prezzoBasePerAdulto,
+    prezzoBase,
     totale,
     alta,
-    supplemento: supplementoBambini
+    supplemento
   };
 }
 
