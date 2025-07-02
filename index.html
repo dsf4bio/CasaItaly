@@ -446,7 +446,9 @@ document.getElementById('formCamera').onsubmit = function(e) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
+
+
+    const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
 const sconto = calcolaSconto(totale, giorni);
 
 let riepilogo = `
@@ -491,6 +493,7 @@ riepilogo += `
 `;
 
 result.innerHTML = riepilogo;
+
 
   }, 700);
 };
