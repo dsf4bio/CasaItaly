@@ -446,24 +446,35 @@ document.getElementById('formCamera').onsubmit = function(e) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-    const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
+const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
 const sconto = calcolaSconto(totale, giorni);
+
 let riepilogo = `
-  <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
-    <div class="mb-2"><b style="color:#bb9457;">
-      ${adulti} ${pluralize(adulti, "adulto", "adulti")}
-      ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
-    </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
-    Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-    <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
-    <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+  <div style="background:#fffbe6; border:2px solid #bb9457; padding:1.1rem 1rem 1.3rem 1rem; border-radius:1rem;">
+    <div class="mb-2">
+      <b style="color:#bb9457;">
+        ${adulti} ${pluralize(adulti, "adulto", "adulti")}
+        ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
+      </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+      Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b>
+    </div>
+    <div class="mb-2">
+      Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b>
+    </div>
+    <div class="mb-2">
+      Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b>
+    </div>
 `;
 
-if(sconto.risparmio > 0) {
+if (sconto.risparmio > 0) {
   riepilogo += `
-    <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
-    <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-    <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+    <div class="mb-2">
+      <span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+      <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+    </div>
+    <div class="mb-2" style="color:#15803d; font-weight:700;">
+      Offerta speciale per soggiorni lunghi!
+    </div>
   `;
 }
 
@@ -478,7 +489,9 @@ riepilogo += `
   </ul>
   </div>
 `;
+
 result.innerHTML = riepilogo;
+
   }, 700);
 };
 
