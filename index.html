@@ -338,14 +338,20 @@ function prezzoCamera(adulti, bambini, giorni, checkin) {
   const alta = isAltaStagione(new Date(checkin));
   const prezzoBase = alta ? 57 : 45;
   const persone = adulti + bambini;
+
   let totale = 0;
   let supplemento = 0;
+
   if (persone <= 3) {
+    // Fino a 3 persone, prezzo fisso per persona
     totale = prezzoBase * persone * giorni;
   } else {
-    supplemento = 11 * (persone - 3) * giorni;
+    // Se ci sono almeno 4 persone, prezzo fisso per 3 persone + supplemento di 11 € per ogni persona in più
+    const extra = persone - 3;
+    supplemento = 11 * extra * giorni;
     totale = prezzoBase * 3 * giorni + supplemento;
   }
+
   return {
     prezzoBase,
     totale,
@@ -353,6 +359,7 @@ function prezzoCamera(adulti, bambini, giorni, checkin) {
     supplemento
   };
 }
+
 
 
 function calcolaSconto(prezzo, giorni) {
