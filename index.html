@@ -21,7 +21,7 @@
   @keyframes spin { 100% { transform: rotate(360deg); } }
   .strikethrough { text-decoration: line-through; color: #bb9457; font-weight: 600; margin-right: 10px; }
   .prezzo-sconto { color: #15803d; font-size: 1.3rem; font-weight: 900; }
-  .risparmio { color: #c75aec; font-weight: 700; background: ; border-radius: .5rem; padding: .2rem .7rem; margin-left: 10px; font-size: 1.1rem; }
+  .risparmio { color: #c75aec; font-weight: 700; background: #ffe5e5; border-radius: .5rem; padding: .2rem .7rem; margin-left: 10px; font-size: 1.1rem; }
   .cta { display: inline-block; margin-top: 1rem; padding: .6rem 1.2rem; background: #bb9457; color: #fef6f0; border-radius: .6rem; font-weight: 700; text-decoration: none; }
   /* Carosello */
   .carousel-container { max-width: 700px; margin: 40px auto 0; position: relative; }
@@ -228,11 +228,11 @@
   </p>
 </section>
 
-<!-- GALLERIA 3 -->
+<!-- GALLERIA 2 -->
 <section class="gallery">
   <img src="https://i.postimg.cc/CKZmB3wz/Whats-App-Image-2025-06-18-at-18-56-37.jpg" class="gallery-img" alt="BARBEQUE">
   <img src="https://i.postimg.cc/XN91g6d5/Whats-App-Image-2025-06-18-at-19-00-09.jpg" class="gallery-img" alt="">
-    
+
 </section>
 
 
@@ -261,6 +261,7 @@
     </form>
   </div>
 </section>
+
 <!-- CAROSELLO IMMAGINI IN FONDO -->
 <div class="carousel-container" id="carousel">
   <div id="carousel-images"></div>
@@ -273,19 +274,18 @@ document.querySelectorAll('.gallery-img').forEach(img => {
   img.onclick = () => {
     document.getElementById('lightbox').style.display = 'flex';
     document.querySelector('#lightbox img').src = img.src;
-  };
+  }
 });
-
 document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
 };
 
-// --- Funzione pluralizza ---
-function pluralize(n, singolare, plurale) {
-  return n === 1 ? singolare : plurale;
+// --- Simulatore prezzi logica aggiornata ---
+function pluralize(n, sing, plur) {
+  return n === 1 ? sing : plur;
 }
 
-// --- Simulatore prezzi logica aggiornata ---
+
 function formatEuro(x) {
   return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
 }
@@ -316,40 +316,40 @@ document.getElementById('btnCamera').onclick = () => setTab("camera");
 setTab("gruppi");
 
 function isAltaStagione(dt) {
-  const mese = dt.getMonth() + 1; // gennaio = 1
-  return [11, 12, 1, 2, 3].includes(mese);
+  // Alta stagione: novembre (11) a marzo (3)
+  const m = dt.getMonth() + 1;
+  return (m >= 11 || m <= 3);
 }
-</script>
-
+// --- sostituisci solo questa funzione ---
 function prezzoGruppo(persone, giorni, checkin) {
-  const checkInDate = new Date(checkin);
-  let totale = 0;
+  const date = new Date(checkin);
+  const alta = isAltaStagione(date);
+  let prezzoBase = alta ? 29 : 22;
 
-  for (let i = 0; i < giorni; i++) {
-    const giorno = new Date(checkInDate);
-    giorno.setDate(giorno.getDate() + i);
-    const alta = isAltaStagione(giorno);
-    let prezzoBase = alta ? 29 : 22;
-
-    if (persone < 30) {
-      const gruppi4 = Math.floor((30 - persone) / 4);
-      prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
-    }
-
-    totale += prezzoBase;
+  // ↑ MODIFICA → incremento sempre, in qualunque stagione
+  if (persone < 30) {
+    const gruppi4 = Math.floor((30 - persone) / 4);
+    prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
   }
 
-  const prezzoMedio = +(totale / giorni).toFixed(2);
-  return { prezzoBase: prezzoMedio, totale: +(totale * persone).toFixed(2), alta: isAltaStagione(checkInDate) };
+  return { prezzoBase, totale: prezzoBase * persone * giorni, alta };
 }
-
 function prezzoCamera(adulti, bambini, giorni, checkin) {
   const alta = isAltaStagione(new Date(checkin));
-  let prezzoBase = alta ? 56 : 44;
-  let prezzo = giorni * prezzoBase;
-  if (bambini > 0) prezzo += giorni * bambini * 9;
-  return { prezzoBase, totale: prezzo, alta, supplemento: bambini > 0 ? giorni * bambini * 9 : 0 };
+  const prezzoBasePerAdulto = alta ? 56 : 44;
+  // Prezzo base proporzionato solo sugli adulti
+  const prezzoBaseTotale = prezzoBasePerAdulto * adulti;
+  // Supplemento fisso per ogni bambino
+  const supplementoBambini = 9 * bambini * giorni;
+  const totale = (prezzoBaseTotale * giorni) + supplementoBambini;
+  return {
+    prezzoBase: prezzoBasePerAdulto,
+    totale,
+    alta,
+    supplemento: supplementoBambini
+  };
 }
+
 
 function calcolaSconto(prezzo, giorni) {
   if (giorni >= 8) {
@@ -360,11 +360,9 @@ function calcolaSconto(prezzo, giorni) {
     return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
   }
 }
-
 function scrollToContatti() {
   document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
 }
-
 document.getElementById('formGruppi').onsubmit = function(e) {
   e.preventDefault();
   const persone = parseInt(document.getElementById('people').value, 10);
@@ -374,47 +372,40 @@ document.getElementById('formGruppi').onsubmit = function(e) {
   const result = document.getElementById('simResultGruppi');
   result.innerHTML = '';
   loader.style.display = 'flex';
-
   setTimeout(() => {
     loader.style.display = 'none';
     if (!checkin || !checkout || persone < 5 || persone > 30) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
     }
-
     const giorni = (new Date(checkout) - new Date(checkin)) / (1000*60*60*24);
     if (giorni < 1) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-
     const { prezzoBase, totale, alta } = prezzoGruppo(persone, giorni, checkin);
     const sconto = calcolaSconto(totale, giorni);
-
     let riepilogo = `
       <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
-        <div class="mb-2"><b style="color:#bb9457;">${persone} ${pluralize(persone, 'persona', 'persone')}</b> | <b>${giorni} ${pluralize(giorni, 'notte', 'notti')}</b><br>
+      <div class="mb-2"><b style="color:#bb9457;">${persone} ${pluralize(persone, "persona", "persone")}</b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
         Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-        <div class="mb-2">Prezzo medio a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
+        <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b> </div>
         <div class="mb-2">Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
-
     if(sconto.risparmio > 0) {
       riepilogo += `
         <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
         <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-        <span class="risparmio">${formatEuro(sconto.risparmio)}</span></div>
         <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
       `;
     }
-
     riepilogo += `
       <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
       <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
-        <li>✔️ Residence video sorvegliato</li>
+        <li>✔️ Residence videosorvegliato</li>
         <li>✔️ Assistenza in lingua italiana</li>
         <li>✔️ Piscina privata</li>
-        <li>✔️ Massima privacy e sicurezza</li>
+        <li>✔️ Privacy e sicurezza</li>
         <li>✔️ Offerta personalizzata</li>
       </ul>
       </div>
@@ -445,39 +436,40 @@ document.getElementById('formCamera').onsubmit = function(e) {
       return;
     }
     const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
-    const sconto = calcolaSconto(totale, giorni);
-    let riepilogo = `
-      <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
-        <div class="mb-2"><b style="color:#bb9457;">${adulti} ${pluralize(adulti, 'adulto', 'adulti')}${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, 'bambino', 'bambini')}` : ''}</b> | <b>${giorni} ${pluralize(giorni, 'notte', 'notti')}</b><br>
-        Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-        <div class="mb-2">Prezzo a notte per camera: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
-        ${supplemento > 0 ? `<div class="mb-2">Supplemento bambini: <b style="color:#15803d;">+${formatEuro(supplemento)}</b></div>` : ""}
-        <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
-    `;
+const sconto = calcolaSconto(totale, giorni);
+let riepilogo = `
+  <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
+    <div class="mb-2"><b style="color:#bb9457;">
+      ${adulti} ${pluralize(adulti, "adulto", "adulti")}
+      ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
+    </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+    Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
+    <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
+    <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+`;
 
-    if(sconto.risparmio > 0) {
-      riepilogo += `
-        <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
-        <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-        <span class="risparmio">${formatEuro(sconto.risparmio)}</span></div>
-        <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
-      `;
-    }
+if(sconto.risparmio > 0) {
+  riepilogo += `
+    <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+    <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+    <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+  `;
+}
 
-    riepilogo += `
-      <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
-      <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
-        <li>✔️ Residence videosorvegliato</li>
-        <li>✔️ Assistenza italiana</li>
-        <li>✔️ Piscina privata</li>
-        <li>✔️ Privacy e sicurezza</li>
-        <li>✔️ Offerta personalizzata</li>
-      </ul>
-      </div>
-    `;
-    result.innerHTML = riepilogo;
+riepilogo += `
+  <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
+  <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
+    <li>✔️ Residence videosorvegliato</li>
+    <li>✔️ Assistenza italiana</li>
+    <li>✔️ Piscina privata</li>
+    <li>✔️ Privacy e sicurezza</li>
+    <li>✔️ Offerta personalizzata</li>
+  </ul>
+  </div>
+`;
+result.innerHTML = riepilogo;
   }, 700);
-}; 
+};
 
 // --- Invio form contatti a Google Sheet e via email ---
 document.getElementById('contactForm').onsubmit = async function(e) {
@@ -516,7 +508,7 @@ document.getElementById('contactForm').onsubmit = async function(e) {
   }
 };
 
-// --- Carosello immagini automatico in in fondo ---
+// --- Carosello immagini automatico in fondo ---
 (function() {
   const imgs = Array.from(document.querySelectorAll('.gallery-img'));
   const carouselImages = document.getElementById('carousel-images');
@@ -558,109 +550,42 @@ document.getElementById('contactForm').onsubmit = async function(e) {
       <a href="#contatti" class="inline-block bg-[#4a3c31] hover:bg-[#382d24] text-white rounded-lg text-base font-bold py-3 px-6 shadow-md shadow-[#bb9457a8] transition">Contattaci ora</a>
     </div>
 
-<!-- CONTATTI -->
-<section id="contatti" class="my-12">
-  <div class="card max-w-2xl mx-auto">
-    <div class="form-title">Contatti</div>
-    <form id="contactForm" class="flex flex-col gap-3" autocomplete="off">
-      <label class="flex flex-col font-semibold text-sm">
-        Nome*
-        <input type="text" id="nome" name="nome" required placeholder="Il tuo nome" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Email*
-        <input type="email" id="email" name="email" required placeholder="La tua email" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
-      </label>
-      <label class="flex flex-col font-semibold text-sm">
-        Messaggio*
-        <textarea id="messaggio" name="messaggio" required placeholder="Scrivi qui il tuo messaggio..." rows="4" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base"></textarea>
-      </label>
-      <button type="submit" class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">Invia</button>
-      <div class="loader2" id="loaderContatti" style="display:none;"><span></span></div>
-      <div class="success-message" id="successContatti" style="display:none;">Messaggio inviato con successo!</div>
-      <div class="error-message" id="errorContatti" style="display:none;">Si è verificato un errore. Riprova.</div>
-    </form>
+    <!-- Contatti -->
+    <div class="flex flex-col items-center gap-4">
+      <div class="flex gap-4 text-3xl">
+        <!-- WhatsApp -->
+        <a href="https://wa.me/393440301412" target="_blank" rel="noopener" aria-label="Chat su WhatsApp" class="text-[#25d366] hover:text-[#1eb154]">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163A11.945 11.945 0 010 11.945 11.944 11.944 0 0111.945 0c3.181 0 6.167 1.24 8.413 3.488a11.89 11.89 0 013.488 8.412c0 6.59-5.355 11.945-11.945 11.945a11.95 11.95 0 01-5.642-1.448L.057 24zm6.54-3.987l.399.237a9.842 9.842 0 004.949 1.33c5.448 0 9.886-4.438 9.886-9.886 0-2.64-1.029-5.122-2.896-6.988A9.825 9.825 0 0011.945 2.06c-5.448 0-9.886 4.438-9.886 9.886 0 1.99.584 3.951 1.688 5.637l-.999 3.637 3.849-.963zM17.984 14.549c-.197-.098-1.174-.578-1.356-.644-.182-.067-.314-.098-.446.098-.133.197-.512.644-.627.777-.115.133-.23.148-.427.05-.197-.098-.832-.307-1.586-.981-.587-.522-.98-1.168-1.096-1.365-.115-.197-.012-.304.086-.401.089-.088.197-.23.296-.345.099-.115.132-.197.198-.33.066-.132.033-.247-.016-.345-.049-.098-.446-1.077-.611-1.475-.161-.387-.323-.334-.446-.34-.115-.006-.247-.007-.38-.007-.132 0-.346.049-.527.246-.182.197-.69.676-.69 1.646 0 .97.707 1.906.807 2.039.099.132 1.392 2.125 3.377 2.897.472.162.84.258 1.127.33.474.12.905.103 1.246.063.38-.045 1.174-.479 1.34-.942.165-.463.165-.86.115-.942-.049-.082-.182-.132-.38-.23z"/></svg>
+        </a>
+      </div>
+
+      <!-- Email + Copy Icon -->
+      <div class="flex items-center gap-2 text-base">
+        <span id="emailValue" class="font-medium select-text">casaitaly25@gmail.com</span>
+        <button id="copyEmailBtn" aria-label="Copia email" class="text-[#bb9457] hover:text-[#a68663] focus:outline-none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.103 0-2 .897-2 2v12h2V3h12V1z"></path><path d="M19 5H8c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h11c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm0 16H8V7h11v14z"></path></svg>
+        </button>
+      </div>
+      <span class="text-sm text-[#4a3c31]">Risposta rapida garantita</span>
+    </div>
   </div>
-</section>
 
-<!-- CAROSELLO IMMAGINI IN FONDO -->
-<div class="carousel-container" id="carousel">
-  <div id="carousel-images"></div>
-  <div class="carousel-dots" id="carousel-dots"></div>
-</div>
+  <p class="text-center text-sm text-[#7c6e5c] mt-8">© 2025 Casa Vacanze Brasile · Porto Seguro · Tutti i diritti riservati</p>
 
-<script>
-  // --- Lightbox immagini ---
-  document.querySelectorAll('.gallery-img').forEach(img => {
-    img.onclick = () => {
-      document.getElementById('lightbox').style.display = 'flex';
-      document.querySelector('#lightbox img').src = img.src;
-    };
-  });
-  document.querySelector('.close-btn').onclick = () => {
-    document.getElementById('lightbox').style.display = 'none';
-  };
+  <!-- Script copia negli appunti -->
+  <script>
+    (function() {
+      const btn = document.getElementById('copyEmailBtn');
+      const email = document.getElementById('emailValue').textContent.trim();
 
-  // --- Funzione pluralizza ---
-  function pluralize(n, singolare, plurale) {
-    return n === 1 ? singolare : plurale;
-  }
-
-  // --- Funzioni form e simulatore ---
-  function formatEuro(x) {
-    return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
-  }
-  function formatDateEu(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('it-IT');
-  }
-  function isAltaStagione(dt) {
-    const mese = dt.getMonth() + 1; // gennaio = 1
-    return [11, 12, 1, 2, 3].includes(mese);
-  }
-
-  function setTab(tab) {
-    if(tab === "gruppi") {
-      document.getElementById('formGruppi').classList.remove('hidden');
-      document.getElementById('formCamera').classList.add('hidden');
-      document.getElementById('btnGruppi').classList.add('bg-[#bb9457]','text-white');
-      document.getElementById('btnGruppi').classList.remove('bg-gray-200','text-[#bb9457]');
-      document.getElementById('btnCamera').classList.remove('bg-[#bb9457]','text-white');
-      document.getElementById('btnCamera').classList.add('bg-gray-200','text-[#bb9457]');
-    } else {
-      document.getElementById('formGruppi').classList.add('hidden');
-      document.getElementById('formCamera').classList.remove('hidden');
-      document.getElementById('btnCamera').classList.add('bg-[#bb9457]','text-white');
-      document.getElementById('btnCamera').classList.remove('bg-gray-200','text-[#bb9457]');
-      document.getElementById('btnGruppi').classList.remove('bg-[#bb9457]','text-white');
-      document.getElementById('btnGruppi').classList.add('bg-gray-200','text-[#bb9457]');
-    }
-  }
-  document.getElementById('btnGruppi').onclick = () => setTab("gruppi");
-  document.getElementById('btnCamera').onclick = () => setTab("camera");
-  setTab("gruppi");
-
-  // Funzioni prezzoGruppo, prezzoCamera, calcolaSconto, scrollToContatti e handlers form (come da codice tuo originale)
-  // Ricorda di includerle tutte qui, sempre dentro lo stesso tag <script>.
-
-  // Funzione copia email
-  (function() {
-    const btn = document.getElementById('copyEmailBtn');
-    const email = document.getElementById('emailValue').textContent.trim();
-
-    btn.addEventListener('click', () => {
-      navigator.clipboard.writeText(email).then(() => {
-        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.103 0-2 .897-2 2v12h2V3h12V1z"></path><path d="M19 5H8c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h11c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm0 16H8V7h11v14z"></path></svg>';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(email).then(() => {
+          btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.103 0-2 .897-2 2v12h2V3h12V1z"></path><path d="M19 5H8c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h11c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm0 16H8V7h11v14z"></path></svg>';
+        });
       });
-    });
-  })();
-</script>
-
-<footer style="background:linear-gradient(90deg,#bb9457 0%,#e6ccb2 100%);" class="text-[#4a3c31] pt-10 pb-6 mt-12 rounded-t-3xl shadow-[0_-8px_32px_rgba(187,148,87,0.10)]">
-  ...
+    })();
+  </script>
 </footer>
-
 
 </body>
 </html>
