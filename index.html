@@ -269,23 +269,62 @@
 </div>
 
 <script>
+// --- Funzioni helper ---
+
+function isAltaStagione(date) {
+  // Mesi alta stagione: nov(11), dic(12), gen(1), feb(2), mar(3)
+  const m = date.getMonth() + 1;
+  return [11, 12, 1, 2, 3].includes(m);
+}
+
+function pluralize(n, singolare, plurale) {
+  return n === 1 ? singolare : plurale;
+}
+
+function formatDateEu(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function formatEuro(num) {
+  return num.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' });
+}
+
+function calcolaSconto(totale, giorni) {
+  // Sconto del 10% per soggiorni di 8+ notti
+  if (giorni >= 8) {
+    const scontato = totale * 0.9;
+    return { pieno: totale, scontato, risparmio: totale - scontato };
+  }
+  return { pieno: totale, scontato: totale, risparmio: 0 };
+}
+
+function scrollToContatti() {
+  document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
+}
+
 // --- Lightbox immagini ---
+
 document.querySelectorAll('.gallery-img').forEach(img => {
   img.onclick = () => {
     document.getElementById('lightbox').style.display = 'flex';
     document.querySelector('#lightbox img').src = img.src;
   }
 });
+
 document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
 };
 
-//--- Simultore prezzi gruppo---
+// --- Simulatore prezzi gruppo ---
+
 function prezzoGruppo(persone, giorni, checkin) {
   const date = new Date(checkin);
   const alta = isAltaStagione(date);
   let prezzoBase = alta ? 29 : 22;
 
+  // Supponiamo che più persone meno prezzo (sconto per gruppi grandi)
+  // Per ogni gruppo di 4 persone in meno rispetto a 30, aumento prezzo del 12%
   if (persone < 30) {
     const gruppi4 = Math.floor((30 - persone) / 4);
     prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
@@ -307,6 +346,7 @@ document.getElementById('formGruppi').onsubmit = function (e) {
 
   setTimeout(() => {
     loader.style.display = 'none';
+
     if (!checkin || !checkout || persone < 5 || persone > 30) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
@@ -351,13 +391,13 @@ document.getElementById('formGruppi').onsubmit = function (e) {
       </ul>
       </div>
     `;
+
     result.innerHTML = riepilogo;
   }, 700);
 };
 
+// --- Simulatore prezzi camera (coppie/famiglie) ---
 
-
-// --- Simulatore prezzi camea---
 function prezzoCamera(adulti, bambini, giorni, checkin, etaBambini) {
   const checkInDate = new Date(checkin);
   let totale = 0;
@@ -408,6 +448,7 @@ document.getElementById('formCamera').onsubmit = function(e) {
 
   setTimeout(() => {
     loader.style.display = 'none';
+
     if (!checkin || !checkout || adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
@@ -419,10 +460,10 @@ document.getElementById('formCamera').onsubmit = function(e) {
       return;
     }
 
-    // Età bambini (dummy per ora — puoi collegare input in futuro)
+    // Dummy età bambini per ora (modifica se hai input età reali)
     let etaBambini = [];
     if (bambini === 2) {
-      etaBambini = [10, 11]; // modificabile se aggiungi input età
+      etaBambini = [10, 11];
     }
 
     const { prezzoBase, totale, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin, etaBambini);
@@ -459,10 +500,13 @@ document.getElementById('formCamera').onsubmit = function(e) {
       </ul>
       </div>
     `;
+
     result.innerHTML = riepilogo;
   }, 700);
 };
 </script>
+
+
 
 
 // --- Invio form contatti a Google Sheet e via email ---
