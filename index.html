@@ -280,7 +280,6 @@ document.querySelector('.close-btn').onclick = () => {
   document.getElementById('lightbox').style.display = 'none';
 };
 // --- Simulatore prezzi logica aggiornata ---
-
 function prezzoCamera(adulti, bambini, giorni, checkin, etaBambini) {
   const checkInDate = new Date(checkin);
   let totale = 0;
@@ -385,6 +384,8 @@ document.getElementById('formCamera').onsubmit = function(e) {
     result.innerHTML = riepilogo;
   }, 700);
 };
+</script>
+
 
 // --- Invio form contatti a Google Sheet e via email ---
 document.getElementById('contactForm').onsubmit = async function(e) {
