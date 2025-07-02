@@ -321,35 +321,53 @@ function isAltaStagione(dt) {
   return (m >= 11 || m <= 3);
 }
 // --- sostituisci solo questa funzione ---
-function prezzoGruppo(persone, giorni, checkin) {
-  const date = new Date(checkin);
-  const alta = isAltaStagione(date);
-  let prezzoBase = alta ? 29 : 22;
 
-  // ↑ MODIFICA → incremento sempre, in qualunque stagione
-  if (persone < 30) {
-    const gruppi4 = Math.floor((30 - persone) / 4);
-    prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
+function contaGiorniAltaEBassa(checkin, checkout) {
+  let dateIn = new Date(checkin);
+  let dateOut = new Date(checkout);
+  let nottiAlta = 0;
+  let nottiBassa = 0;
+
+  while (dateIn < dateOut) {
+    const m = dateIn.getMonth() + 1;
+    const alta = (m >= 11 || m <= 3);
+    if (alta) nottiAlta++;
+    else nottiBassa++;
+    dateIn.setDate(dateIn.getDate() + 1);
   }
 
-  return { prezzoBase, totale: prezzoBase * persone * giorni, alta };
+  return { nottiAlta, nottiBassa };
 }
-function prezzoCamera(adulti, bambini, giorni, checkin) {
-  const alta = isAltaStagione(new Date(checkin));
-  const prezzoBasePerAdulto = alta ? 56 : 44;
-  // Prezzo base proporzionato solo sugli adulti
-  const prezzoBaseTotale = prezzoBasePerAdulto * adulti;
-  // Supplemento fisso per ogni bambino
-  const supplementoBambini = 9 * bambini * giorni;
-  const totale = (prezzoBaseTotale * giorni) + supplementoBambini;
+
+
+
+//prezzo gruppo----
+
+function prezzoGruppo(persone, checkin, checkout) {
+  const { nottiAlta, nottiBassa } = contaGiorniAltaEBassa(checkin, checkout);
+  let prezzoAlta = 29;
+  let prezzoBassa = 22;
+
+  // Incremento progressivo se meno di 30 persone
+  if (persone < 30) {
+    const gruppi4 = Math.floor((30 - persone) / 4);
+    prezzoAlta = +(prezzoAlta * Math.pow(1.12, gruppi4)).toFixed(2);
+    prezzoBassa = +(prezzoBassa * Math.pow(1.12, gruppi4)).toFixed(2);
+  }
+
+  const totale = (prezzoAlta * nottiAlta + prezzoBassa * nottiBassa) * persone;
+
   return {
-    prezzoBase: prezzoBasePerAdulto,
+    prezzoBase: `${prezzoBassa}–${prezzoAlta}`,
     totale,
-    alta,
-    supplemento: supplementoBambini
+    alta: nottiAlta > 0
   };
 }
 
+
+
+
+// prezzo camera coppie---
 
 function calcolaSconto(prezzo, giorni) {
   if (giorni >= 8) {
@@ -383,7 +401,7 @@ document.getElementById('formGruppi').onsubmit = function(e) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-    const { prezzoBase, totale, alta } = prezzoGruppo(persone, giorni, checkin);
+const { prezzoBase, totale, alta } = prezzoGruppo(persone, checkin, checkout);
     const sconto = calcolaSconto(totale, giorni);
     let riepilogo = `
       <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
@@ -424,52 +442,153 @@ document.getElementById('formCamera').onsubmit = function(e) {
   const result = document.getElementById('simResultCamera');
   result.innerHTML = '';
   loader.style.display = 'flex';
+
   setTimeout(() => {
     loader.style.display = 'none';
+
     if (!checkin || !checkout || adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
     }
-    const giorni = (new Date(checkout) - new Date(checkin)) / (1000*60*60*24);
+
+    const giorni = (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
     if (giorni < 1) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-    const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin);
-const sconto = calcolaSconto(totale, giorni);
-let riepilogo = `
-  <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
-    <div class="mb-2"><b style="color:#bb9457;">
-      ${adulti} ${pluralize(adulti, "adulto", "adulti")}
-      ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
-    </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
-    Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-    <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
-    <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
-`;
 
-if(sconto.risparmio > 0) {
-  riepilogo += `
-    <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
-    <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-    <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
-  `;
+    // Funzione che calcola notti in alta e bassa stagione
+    function contaGiorniAltaEBassa(checkin, checkout) {
+      let dateIn = new Date(checkin);
+      let dateOut = new Date(checkout);
+      let nottiAlta = 0;
+      let nottiBassa = 0;
+
+      while (dateIn < dateOut) {
+        const m = dateIn.getMonth() + 1;
+        const alta = (m >= 11 || m <= 3);
+        if (alta) nottiAlta++;
+        else nottiBassa++;
+        dateIn.setDate(dateIn.getDate() + 1);
+      }
+
+      return { nottiAlta, nottiBassa };
+    }
+
+    // Calcolo prezzi camere con regole specifiche
+function prezzoCamera(adulti, bambini, checkin, checkout) {
+  let dateIn = new Date(checkin);
+  let dateOut = new Date(checkout);
+  let nottiAlta = 0;
+  let nottiBassa = 0;
+
+  while (dateIn < dateOut) {
+    const giorno = dateIn.getDate();
+    const mese = dateIn.getMonth() + 1;
+
+    const alta = (
+      (mese === 11) || (mese === 12) ||
+      (mese === 1)  || (mese === 2)  || 
+      (mese === 3 && giorno <= 31)
+    );
+
+    if (alta) nottiAlta++;
+    else nottiBassa++;
+
+    dateIn.setDate(dateIn.getDate() + 1);
+  }
+
+  const prezzoAlta = 57;
+  const prezzoBassa = 45;
+  const personeTotali = adulti + bambini;
+
+  let totale = (prezzoAlta * nottiAlta) + (prezzoBassa * nottiBassa);
+  let supplemento = 0;
+
+  if (personeTotali === 4 && adulti === 2 && bambini === 2) {
+    supplemento = 11 * (nottiAlta + nottiBassa);
+    totale += supplemento;
+  }
+
+  return {
+    prezzoBase: null, // non usato nel riepilogo
+    totale,
+    alta: nottiAlta > 0,
+    supplemento
+  };
 }
 
-riepilogo += `
-  <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
-  <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
-    <li>✔️ Residence videosorvegliato</li>
-    <li>✔️ Assistenza italiana</li>
-    <li>✔️ Piscina privata</li>
-    <li>✔️ Privacy e sicurezza</li>
-    <li>✔️ Offerta personalizzata</li>
-  </ul>
-  </div>
-`;
-result.innerHTML = riepilogo;
+    // Funzione per sconto soggiorni lunghi (>=8 notti)
+    function calcolaSconto(prezzo, giorni) {
+      if (giorni >= 8) {
+        const scontato = Math.round(prezzo * (1 - 0.046));
+        const risparmio = Math.round(prezzo * 0.046);
+        return { pieno: prezzo, scontato, risparmio };
+      } else {
+        return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
+      }
+    }
+
+    // Funzioni helper per formattazione (puoi inserirle fuori)
+    function pluralize(n, sing, plur) {
+      return n === 1 ? sing : plur;
+    }
+    function formatEuro(x) {
+      return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
+    }
+    function formatDateEu(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('it-IT');
+    }
+
+    // Scroll a contatti
+    function scrollToContatti() {
+      document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Calcolo prezzi e sconto
+    const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, checkin, checkout);
+    const sconto = calcolaSconto(totale, giorni);
+
+    // Costruzione riepilogo HTML
+    let riepilogo = `
+      <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
+        <div class="mb-2"><b style="color:#bb9457;">
+          ${adulti} ${pluralize(adulti, "adulto", "adulti")}
+          ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
+        </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+        Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
+        <div class="mb-2">Prezzo a notte: <b style="color:#15803d;">${prezzoBase} €</b></div>
+        ${supplemento > 0 ? `<div class="mb-2">Supplemento extra: <b style="color:#15803d;">${formatEuro(supplemento)}</b></div>` : ""}
+        <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+    `;
+
+    if (sconto.risparmio > 0) {
+      riepilogo += `
+        <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
+        <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
+        <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+      `;
+    }
+
+    riepilogo += `
+      <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
+      <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
+        <li>✔️ Residence videosorvegliato</li>
+        <li>✔️ Assistenza italiana</li>
+        <li>✔️ Piscina privata</li>
+        <li>✔️ Privacy e sicurezza</li>
+        <li>✔️ Offerta personalizzata</li>
+      </ul>
+      </div>
+    `;
+
+    result.innerHTML = riepilogo;
+
   }, 700);
 };
+
 
 // --- Invio form contatti a Google Sheet e via email ---
 document.getElementById('contactForm').onsubmit = async function(e) {
