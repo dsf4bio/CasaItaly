@@ -281,125 +281,99 @@ document.querySelector('.close-btn').onclick = () => {
 };
 
 // --- Simulatore prezzi logica aggiornata ---
-function pluralize(n, sing, plur) {
-  return n === 1 ? sing : plur;
-}
 
+function prezzoCamera(adulti, bambini, giorni, checkin, etaBambini) {
+  const checkInDate = new Date(checkin);
+  let totale = 0;
+  let supplementoTotale = 0;
 
-function formatEuro(x) {
-  return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
-}
-function formatDateEu(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('it-IT');
-}
-function setTab(tab) {
-  if(tab === "gruppi") {
-    document.getElementById('formGruppi').classList.remove('hidden');
-    document.getElementById('formCamera').classList.add('hidden');
-    document.getElementById('btnGruppi').classList.add('bg-[#bb9457]','text-white');
-    document.getElementById('btnGruppi').classList.remove('bg-gray-200','text-[#bb9457]');
-    document.getElementById('btnCamera').classList.remove('bg-[#bb9457]','text-white');
-    document.getElementById('btnCamera').classList.add('bg-gray-200','text-[#bb9457]');
-  } else {
-    document.getElementById('formGruppi').classList.add('hidden');
-    document.getElementById('formCamera').classList.remove('hidden');
-    document.getElementById('btnCamera').classList.add('bg-[#bb9457]','text-white');
-    document.getElementById('btnCamera').classList.remove('bg-gray-200','text-[#bb9457]');
-    document.getElementById('btnGruppi').classList.remove('bg-[#bb9457]','text-white');
-    document.getElementById('btnGruppi').classList.add('bg-gray-200','text-[#bb9457]');
-  }
-}
-document.getElementById('btnGruppi').onclick = () => setTab("gruppi");
-document.getElementById('btnCamera').onclick = () => setTab("camera");
-setTab("gruppi");
+  for (let i = 0; i < giorni; i++) {
+    const giorno = new Date(checkInDate);
+    giorno.setDate(giorno.getDate() + i);
 
-function isAltaStagione(dt) {
-  // Alta stagione: novembre (11) a marzo (3)
-  const m = dt.getMonth() + 1;
-  return (m >= 11 || m <= 3);
-}
-// --- sostituisci solo questa funzione ---
-function prezzoGruppo(persone, giorni, checkin) {
-  const date = new Date(checkin);
-  const alta = isAltaStagione(date);
-  let prezzoBase = alta ? 29 : 22;
+    const mese = giorno.getMonth() + 1;
+    const alta = [11, 12, 1, 2, 3].includes(mese);
+    const prezzoBase = alta ? 56 : 45;
 
-  // ↑ MODIFICA → incremento sempre, in qualunque stagione
-  if (persone < 30) {
-    const gruppi4 = Math.floor((30 - persone) / 4);
-    prezzoBase = +(prezzoBase * Math.pow(1.12, gruppi4)).toFixed(2);
+    const personeTotali = adulti + bambini;
+    let supplemento = 0;
+
+    if (personeTotali <= 3) {
+      totale += prezzoBase;
+    } else if (adulti === 2 && bambini === 2) {
+      const entrambiUnder13 = etaBambini.length === 2 && etaBambini.every(e => e < 13);
+      if (entrambiUnder13) {
+        supplemento = 11;
+      }
+      totale += prezzoBase + supplemento;
+      supplementoTotale += supplemento;
+    } else {
+      totale += prezzoBase;
+    }
   }
 
-  return { prezzoBase, totale: prezzoBase * persone * giorni, alta };
-}
-function prezzoCamera(adulti, bambini, giorni, checkin) {
-  const alta = isAltaStagione(new Date(checkin));
-  const prezzoBasePerAdulto = alta ? 56 : 44;
-  // Prezzo base proporzionato solo sugli adulti
-  const prezzoBaseTotale = prezzoBasePerAdulto * adulti;
-  // Supplemento fisso per ogni bambino
-  const supplementoBambini = 9 * bambini * giorni;
-  const totale = (prezzoBaseTotale * giorni) + supplementoBambini;
   return {
-    prezzoBase: prezzoBasePerAdulto,
+    prezzoBase: Math.round(totale / giorni),
     totale,
-    alta,
-    supplemento: supplementoBambini
+    supplemento: supplementoTotale
   };
 }
 
-
-function calcolaSconto(prezzo, giorni) {
-  if (giorni >= 8) {
-    const scontato = Math.round(prezzo * (1 - 0.046));
-    const risparmio = Math.round(prezzo * 0.046);
-    return { pieno: prezzo, scontato, risparmio };
-  } else {
-    return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
-  }
-}
-function scrollToContatti() {
-  document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
-}
-document.getElementById('formGruppi').onsubmit = function(e) {
+document.getElementById('formCamera').onsubmit = function(e) {
   e.preventDefault();
-  const persone = parseInt(document.getElementById('people').value, 10);
-  const checkin = document.getElementById('checkin').value;
-  const checkout = document.getElementById('checkout').value;
-  const loader = document.getElementById('loaderGruppi');
-  const result = document.getElementById('simResultGruppi');
+  const adulti = parseInt(document.getElementById('adulti').value, 10);
+  const bambini = parseInt(document.getElementById('bambini').value, 10);
+  const checkin = document.getElementById('checkinCam').value;
+  const checkout = document.getElementById('checkoutCam').value;
+  const loader = document.getElementById('loaderCamera');
+  const result = document.getElementById('simResultCamera');
   result.innerHTML = '';
   loader.style.display = 'flex';
+
   setTimeout(() => {
     loader.style.display = 'none';
-    if (!checkin || !checkout || persone < 5 || persone > 30) {
+    if (!checkin || !checkout || adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
     }
-    const giorni = (new Date(checkout) - new Date(checkin)) / (1000*60*60*24);
+
+    const giorni = (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
     if (giorni < 1) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
-    const { prezzoBase, totale, alta } = prezzoGruppo(persone, giorni, checkin);
+
+    // Età bambini (dummy se non c'è campo età)
+    let etaBambini = [];
+    if (bambini === 2) {
+      etaBambini = [10, 11]; // puoi sostituire con input futuro
+    }
+
+    const { prezzoBase, totale, supplemento } = prezzoCamera(adulti, bambini, giorni, checkin, etaBambini);
     const sconto = calcolaSconto(totale, giorni);
+
     let riepilogo = `
       <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
-      <div class="mb-2"><b style="color:#bb9457;">${persone} ${pluralize(persone, "persona", "persone")}</b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+        <div class="mb-2"><b style="color:#bb9457;">${adulti} ${pluralize(adulti, "adulto", "adulti")}${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ''}</b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
         Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-        <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b> </div>
-        <div class="mb-2">Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+        <div class="mb-2">Prezzo medio a notte per camera: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
+        <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
-    if(sconto.risparmio > 0) {
+
+    if (supplemento > 0) {
+      riepilogo += `<div class="mb-2">Supplemento bambini: <b>${formatEuro(supplemento)}</b></div>`;
+    }
+
+    if (sconto.risparmio > 0) {
       riepilogo += `
         <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
         <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
         <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
       `;
     }
+
     riepilogo += `
+
       <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
       <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
         <li>✔️ Residence videosorvegliato</li>
