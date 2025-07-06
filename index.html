@@ -40,6 +40,15 @@
   @keyframes popshow { from { opacity: 0; transform: scale(.8); } to   { opacity: 1; transform: scale(1); } }
   .close-popup-btn { position: absolute; top: 10px; right: 18px; font-size: 2rem; font-weight: 700; color: #bbb; cursor: pointer; transition: .2s; }
   .close-popup-btn:hover { color: #bb9457; }
+@media (prefers-color-scheme: dark) {
+  /* Override dark mode */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+
 </style>
 </head>
 <body>
