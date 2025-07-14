@@ -1,241 +1,11 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light">
-  <title>🏡 Casa Vacanze Brasile</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #fef6f0;
-      color: #4a3c31;
-    }
-
-    /* Forza modalità chiara anche se il browser è in dark */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #fef6f0 !important;
-        color: #4a3c31 !important;
-      }
-    }
-
-    /* Qui puoi continuare con tutti gli altri tuoi stili */
-    .gallery {
-      max-width: 1200px;
-      margin: 40px auto 10px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 18px;
-    }
-
-    .gallery-img {
-      aspect-ratio: 4/3;
-      width: 100%;
-      object-fit: cover;
-      border-radius: 1.1rem;
-      border: 3px solid #f3e9d2;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      transition: transform .4s, box-shadow .3s, border-color .3s;
-      cursor: zoom-in;
-      background: #eee;
-    }
-
-    .gallery-img:hover {
-      transform: scale(1.07);
-      box-shadow: 0 8px 32px rgba(187,148,87,0.20);
-      border-color: #bb9457;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 1rem;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.10);
-      padding: 2.5rem;
-    }
-
-    .form-title {
-      text-align: center;
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-    }
-
-    .success-message, .error-message {
-      text-align: center;
-      font-weight: 600;
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .success-message { color: #15803d; }
-    .error-message   { color: #b91c1c; }
-
-    .loader2 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 1rem auto;
-    }
-
-    .loader2 span {
-      width: 44px;
-      height: 44px;
-      border: 5px solid #f3e9d2;
-      border-top: 5px solid #bb9457;
-      border-radius: 50%;
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-
-    .strikethrough {
-      text-decoration: line-through;
-      color: #bb9457;
-      font-weight: 600;
-      margin-right: 10px;
-    }
-
-    .prezzo-sconto {
-      color: #15803d;
-      font-size: 1.3rem;
-      font-weight: 900;
-    }
-
-    .risparmio {
-      color: #c75aec;
-      font-weight: 700;
-      background: #ffe5e5;
-      border-radius: .5rem;
-      padding: .2rem .7rem;
-      margin-left: 10px;
-      font-size: 1.1rem;
-    }
-
-    .cta {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: .6rem 1.2rem;
-      background: #bb9457;
-      color: #fef6f0;
-      border-radius: .6rem;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .carousel-container {
-      max-width: 700px;
-      margin: 40px auto 0;
-      position: relative;
-    }
-
-    .carousel-img {
-      width: 100%;
-      height: 370px;
-      object-fit: cover;
-      border-radius: 1.2rem;
-      box-shadow: 0 4px 22px #bb9457a6;
-      display: none;
-    }
-
-    .carousel-img.active {
-      display: block;
-      animation: fadein .8s;
-    }
-
-    @keyframes fadein {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .carousel-dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .carousel-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #e6ccb2;
-      cursor: pointer;
-      transition: background .2s;
-    }
-
-    .carousel-dot.active {
-      background: #bb9457;
-    }
-
-    input::placeholder, textarea::placeholder {
-      font-size: 85%;
-      font-weight: 400;
-    }
-
-    #messaggio {
-      width: 105%;
-      max-width: 100%;
-      resize: vertical;
-    }
-
-    input:not([type="checkbox"]):not([type="radio"]), textarea {
-      font-size: .95rem;
-      font-weight: 400;
-      color: #434040;
-    }
-
-    .popup-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.55);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 20000;
-    }
-
-    .popup-anim {
-      background: #fff;
-      padding: 2.2rem 2rem;
-      border-radius: 1.1rem;
-      text-align: center;
-      box-shadow: 0 8px 40px #bb9457a6;
-      position: relative;
-      animation: popshow .45s cubic-bezier(.6, 2, .4, 1);
-    }
-
-    @keyframes popshow {
-      from { opacity: 0; transform: scale(.8); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    .close-popup-btn {
-      position: absolute;
-      top: 10px;
-      right: 18px;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #bbb;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .close-popup-btn:hover {
-      color: #bb9457;
-    }
-  </style>
-</head>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🏡 Casa Vacanze Brasile</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
   body { font-family: 'Poppins', sans-serif; background: #fef6f0; color: #4a3c31; }
   .gallery { max-width: 1200px; margin: 40px auto 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
@@ -269,15 +39,6 @@
   @keyframes popshow { from { opacity: 0; transform: scale(.8); } to   { opacity: 1; transform: scale(1); } }
   .close-popup-btn { position: absolute; top: 10px; right: 18px; font-size: 2rem; font-weight: 700; color: #bbb; cursor: pointer; transition: .2s; }
   .close-popup-btn:hover { color: #bb9457; }
-@media (prefers-color-scheme: dark) {
-  /* Override dark mode */
-  body {
-    background: white !important;
-    color: black !important;
-  }
-}
-
-
 </style>
 </head>
 <body>
@@ -481,25 +242,51 @@
   <div class="card max-w-2xl mx-auto">
     <div class="form-title">Contatti</div>
     <form id="contactForm" class="flex flex-col gap-3" autocomplete="off">
+      <!-- Honeypot anti-bot -->
+      <input type="text" name="address" style="display:none" tabindex="-1" autocomplete="off" />
+
       <label class="flex flex-col font-semibold text-sm">
         Nome*
-        <input type="text" id="nome" name="nome" required placeholder="Il tuo nome" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+        <input type="text" id="nome" name="nome" required minlength="2" maxlength="50"
+               placeholder="Il tuo nome"
+               class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
       </label>
+
       <label class="flex flex-col font-semibold text-sm">
         Email*
-        <input type="email" id="email" name="email" required placeholder="La tua email" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
+        <input type="email" id="email" name="email" required
+               onpaste="return false;" oncopy="return false;"
+               placeholder="La tua email"
+               class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
       </label>
       <label class="flex flex-col font-semibold text-sm">
-        Messaggio*
-        <textarea id="messaggio" name="messaggio" required placeholder="Scrivi qui il tuo messaggio..." rows="4" class="mt-1 rounded border border-gray-300 px-3 py-2 text-base"></textarea>
+        Telefono (facoltativo)
+        <input type="tel" id="telefono" name="telefono"
+               pattern="^\+?[0-9\s\-]{7,20}$"
+               placeholder="+39 123 4567890"
+               class="mt-1 rounded border border-gray-300 px-3 py-2 text-base" />
       </label>
-      <button type="submit" class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">Invia</button>
+
+      <label class="flex flex-col font-semibold text-sm">
+        Messaggio*
+        <textarea id="messaggio" name="messaggio" required maxlength="1000"
+                  placeholder="Scrivi qui il tuo messaggio..." rows="4"
+                  class="mt-1 rounded border border-gray-300 px-3 py-2 text-base"></textarea>
+      </label>
+
+      <button type="submit"
+              class="bg-[#bb9457] text-white rounded-lg px-4 py-2 font-bold hover:bg-[#a67c52] transition text-base">
+        Invia
+      </button>
+
       <div class="loader2" id="loaderContatti" style="display:none;"><span></span></div>
-      <div class="success-message" id="successContatti">Messaggio inviato con successo!</div>
-      <div class="error-message" id="errorContatti">Si è verificato un errore. Riprova.</div>
+
+      <div id="successContatti" class="hidden bg-green-100 text-green-800 border border-green-300 rounded p-4 text-sm leading-relaxed mt-2"></div>
+      <div id="errorContatti" class="hidden bg-red-100 text-red-800 border border-red-300 rounded p-4 text-sm mt-2"></div>
+
     </form>
   </div>
-</section>
+  </section>
 
 <!-- CAROSELLO IMMAGINI IN FONDO -->
 <div class="carousel-container" id="carousel">
@@ -508,6 +295,61 @@
 </div>
 
 <script>
+
+document.getElementById('contactForm').onsubmit = async function(e) {
+  e.preventDefault();
+
+  // Honeypot anti-bot: se compilato blocca l'invio
+  const trap = this.querySelector('input[name="address"]');
+  if (trap.value.trim() !== '') {
+    document.getElementById('errorContatti').classList.remove('hidden');
+    document.getElementById('errorContatti').innerText = 'Errore: invio bloccato.';
+    document.getElementById('successContatti').classList.add('hidden');
+    return;
+  }
+
+  // Mostra loader, nascondi messaggi
+  document.getElementById('loaderContatti').style.display = 'flex';
+  document.getElementById('successContatti').classList.add('hidden');
+  document.getElementById('errorContatti').classList.add('hidden');
+
+  // Raccogli dati
+  const nome = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const telefono = document.getElementById('telefono').value.trim();
+  const messaggio = document.getElementById('messaggio').value.trim();
+
+  // Prepara dati da inviare
+  const data = new FormData();
+  data.append('nome', nome);
+  data.append('email', email);
+  data.append('telefono', telefono);
+  data.append('messaggio', messaggio);
+
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyqGsD1bQ-VcweqXUmjZBzOoP3g6ctMOcUECALxg6ok3RbGxkcX6qNiAGJpoNsQF3-Wjw/exec';
+
+  try {
+    const response = await fetch(scriptURL, { method: 'POST', body: data });
+    const text = await response.text();
+
+    document.getElementById('loaderContatti').style.display = 'none';
+
+    if (text.toLowerCase().includes('ok')) {
+      document.getElementById('successContatti').classList.remove('hidden');
+      document.getElementById('successContatti').innerText = 'Grazie per averci contattato! Risponderemo al più presto.';
+      this.reset();
+    } else {
+      document.getElementById('errorContatti').classList.remove('hidden');
+      document.getElementById('errorContatti').innerText = 'Si è verificato un errore durante l\'invio.';
+    }
+  } catch (error) {
+    document.getElementById('loaderContatti').style.display = 'none';
+    document.getElementById('errorContatti').classList.remove('hidden');
+    document.getElementById('errorContatti').innerText = 'Errore di rete, riprova più tardi.';
+  }
+};
+
+
 // --- Lightbox immagini ---
 document.querySelectorAll('.gallery-img').forEach(img => {
   img.onclick = () => {
@@ -581,8 +423,18 @@ function contaGiorniAltaEBassa(checkin, checkout) {
 
 
 //prezzo gruppo----
-
 function prezzoGruppo(persone, checkin, checkout) {
+  const oggi = new Date();
+  oggi.setHours(0, 0, 0, 0);
+
+  const dataCheckin = new Date(checkin);
+  const dataCheckout = new Date(checkout);
+
+  // Blocca se il check-in è nel passato
+  if (dataCheckin < oggi || dataCheckin >= dataCheckout || persone < 5 || persone > 30) {
+    return { prezzoBase: 0, totale: 0, alta: false };
+  }
+
   const { nottiAlta, nottiBassa } = contaGiorniAltaEBassa(checkin, checkout);
   let prezzoAlta = 29;
   let prezzoBassa = 22;
@@ -594,92 +446,24 @@ function prezzoGruppo(persone, checkin, checkout) {
     prezzoBassa = +(prezzoBassa * Math.pow(1.12, gruppi4)).toFixed(2);
   }
 
-  const totale = (prezzoAlta * nottiAlta + prezzoBassa * nottiBassa) * persone;
-
+  const totale = +(prezzoAlta * nottiAlta + prezzoBassa * nottiBassa).toFixed(2);
   const nottiTotali = nottiAlta + nottiBassa;
-const prezzoMedio = nottiTotali > 0 ? Math.round((prezzoAlta * nottiAlta + prezzoBassa * nottiBassa) / nottiTotali) : 0;
+  const prezzoMedio = nottiTotali > 0 ? +(totale / nottiTotali).toFixed(2) : 0;
 
-return {
-  prezzoBase: prezzoMedio,
-  totale,
-  alta: nottiAlta > 0
-};
+  return {
+    prezzoBase: prezzoMedio,
+    totale,
+    alta: nottiAlta > 0
+  };
 }
-
-
-
-
-// prezzo camera coppie---
-
-function calcolaSconto(prezzo, giorni) {
-  if (giorni >= 8) {
-    const scontato = Math.round(prezzo * (1 - 0.046));
-    const risparmio = Math.round(prezzo * 0.046);
-    return { pieno: prezzo, scontato, risparmio };
-  } else {
-    return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
-  }
-}
-function scrollToContatti() {
-  document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
-}
-document.getElementById('formGruppi').onsubmit = function(e) {
-  e.preventDefault();
-  const persone = parseInt(document.getElementById('people').value, 10);
-  const checkin = document.getElementById('checkin').value;
-  const checkout = document.getElementById('checkout').value;
-  const loader = document.getElementById('loaderGruppi');
-  const result = document.getElementById('simResultGruppi');
-  result.innerHTML = '';
-  loader.style.display = 'flex';
-  setTimeout(() => {
-    loader.style.display = 'none';
-    if (!checkin || !checkout || persone < 5 || persone > 30) {
-      result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
-      return;
-    }
-    const giorni = (new Date(checkout) - new Date(checkin)) / (1000*60*60*24);
-    if (giorni < 1) {
-      result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
-      return;
-    }
-const { prezzoBase, totale, alta } = prezzoGruppo(persone, checkin, checkout);
-    const sconto = calcolaSconto(totale, giorni);
-    let riepilogo = `
-      <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
-      <div class="mb-2"><b style="color:#bb9457;">${persone} ${pluralize(persone, "persona", "persone")}</b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
-        Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-        <div class="mb-2">Prezzo a notte per persona: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b> </div>
-        <div class="mb-2">Totale gruppo: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
-    `;
-    if(sconto.risparmio > 0) {
-      riepilogo += `
-        <div class="mb-2"><span class="strikethrough">${formatEuro(sconto.pieno)}</span>
-        <span class="prezzo-sconto">${formatEuro(sconto.scontato)}</span>
-        <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
-      `;
-    }
-    riepilogo += `
-      <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
-      <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
-        <li>✔️ Residence videosorvegliato</li>
-        <li>✔️ Assistenza in lingua italiana</li>
-        <li>✔️ Piscina privata</li>
-        <li>✔️ Privacy e sicurezza</li>
-        <li>✔️ Offerta personalizzata</li>
-      </ul>
-      </div>
-    `;
-    result.innerHTML = riepilogo;
-  }, 700);
-};
-
 document.getElementById('formCamera').onsubmit = function(e) {
   e.preventDefault();
+
+  // Prendo i valori
   const adulti = parseInt(document.getElementById('adulti').value, 10);
   const bambini = parseInt(document.getElementById('bambini').value, 10);
-  const checkin = document.getElementById('checkinCam').value;
-  const checkout = document.getElementById('checkoutCam').value;
+  const checkinStr = document.getElementById('checkinCam').value;
+  const checkoutStr = document.getElementById('checkoutCam').value;
   const loader = document.getElementById('loaderCamera');
   const result = document.getElementById('simResultCamera');
   result.innerHTML = '';
@@ -688,99 +472,98 @@ document.getElementById('formCamera').onsubmit = function(e) {
   setTimeout(() => {
     loader.style.display = 'none';
 
-    if (!checkin || !checkout || adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2) {
+    // Controllo presenza e validità campi
+    if (!checkinStr || !checkoutStr || isNaN(adulti) || isNaN(bambini)) {
       result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
       return;
     }
 
-    const giorni = (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
-    if (giorni < 1) {
+    if (adulti < 1 || adulti > 2 || bambini < 0 || bambini > 2) {
+      result.innerHTML = '<span class="error-message" style="display:block;">Inserisci un numero valido di adulti (1-2) e bambini (0-2).</span>';
+      return;
+    }
+
+    // Converto le date e azzero orari
+    const oggi = new Date();
+    oggi.setHours(0,0,0,0);
+    const checkin = new Date(checkinStr);
+    checkin.setHours(0,0,0,0);
+    const checkout = new Date(checkoutStr);
+    checkout.setHours(0,0,0,0);
+
+    // Controllo date passate e ordine date
+    if (checkin < oggi) {
+      result.innerHTML = '<span class="error-message" style="display:block;">La data di check-in non può essere nel passato.</span>';
+      return;
+    }
+
+    if (checkout <= checkin) {
       result.innerHTML = '<span class="error-message" style="display:block;">La data di check-out deve essere successiva al check-in.</span>';
       return;
     }
 
-    // Funzione che calcola notti in alta e bassa stagione
-    function contaGiorniAltaEBassa(checkin, checkout) {
+    // Calcolo numero di notti
+    const giorni = Math.floor((checkout - checkin) / (1000 * 60 * 60 * 24));
+
+
+    // Funzione per calcolare prezzo e supplementi - qui puoi inserire la tua logica esatta
+    function prezzoCamera(adulti, bambini, checkin, checkout) {
+      // Qui la tua funzione già scritta o migliorata
       let dateIn = new Date(checkin);
       let dateOut = new Date(checkout);
       let nottiAlta = 0;
       let nottiBassa = 0;
 
       while (dateIn < dateOut) {
-        const m = dateIn.getMonth() + 1;
-        const alta = (m >= 11 || m <= 3);
+        const mese = dateIn.getMonth() + 1;
+        // Alta stagione: novembre, dicembre, gennaio, febbraio, marzo
+        const alta = (mese === 11 || mese === 12 || mese === 1 || mese === 2 || mese === 3);
         if (alta) nottiAlta++;
         else nottiBassa++;
+
         dateIn.setDate(dateIn.getDate() + 1);
       }
 
-      return { nottiAlta, nottiBassa };
+      const prezzoAlta = 57;
+      const prezzoBassa = 45;
+      const personeTotali = adulti + bambini;
+
+      let totale = (prezzoAlta * nottiAlta) + (prezzoBassa * nottiBassa);
+      let supplemento = 0;
+
+      if (personeTotali === 4 && adulti === 2 && bambini === 2) {
+        supplemento = 11 * (nottiAlta + nottiBassa);
+        totale += supplemento;
+      }
+
+      const nottiTotali = nottiAlta + nottiBassa;
+      const prezzoBase = nottiTotali > 0 ? +(totale / nottiTotali).toFixed(2) : 0;
+
+      return {
+        prezzoBase,
+        totale,
+        alta: nottiAlta > 0,
+        supplemento
+      };
     }
 
-    // Calcolo prezzi camere con regole specifiche
-function prezzoCamera(adulti, bambini, checkin, checkout) {
-  let dateIn = new Date(checkin);
-  let dateOut = new Date(checkout);
-  let nottiAlta = 0;
-  let nottiBassa = 0;
-
-  while (dateIn < dateOut) {
-    const giorno = dateIn.getDate();
-    const mese = dateIn.getMonth() + 1;
-
-    const alta = (
-      (mese === 11) || (mese === 12) ||
-      (mese === 1)  || (mese === 2)  || 
-      (mese === 3 && giorno <= 31)
-    );
-
-    if (alta) nottiAlta++;
-    else nottiBassa++;
-
-    dateIn.setDate(dateIn.getDate() + 1);
-  }
-
-  const prezzoAlta = 57;
-  const prezzoBassa = 45;
-  const personeTotali = adulti + bambini;
-
-  let totale = (prezzoAlta * nottiAlta) + (prezzoBassa * nottiBassa);
-  let supplemento = 0;
-
-  if (personeTotali === 4 && adulti === 2 && bambini === 2) {
-    supplemento = 11 * (nottiAlta + nottiBassa);
-    totale += supplemento;
-  }
-
-  const nottiTotali = nottiAlta + nottiBassa;
-const prezzoBase = nottiTotali > 0 ? Math.round(totale / nottiTotali) : 0;
-
-return {
-  prezzoBase,
-  totale,
-  alta: nottiAlta > 0,
-  supplemento
-};
-
-}
-
-    // Funzione per sconto soggiorni lunghi (>=8 notti)
+    // Funzione sconto per soggiorni >=8 notti
     function calcolaSconto(prezzo, giorni) {
       if (giorni >= 8) {
-        const scontato = Math.round(prezzo * (1 - 0.046));
-        const risparmio = Math.round(prezzo * 0.046);
+        const scontato = +(prezzo * (1 - 0.046)).toFixed(2);
+        const risparmio = +(prezzo * 0.046).toFixed(2);
         return { pieno: prezzo, scontato, risparmio };
       } else {
         return { pieno: prezzo, scontato: prezzo, risparmio: 0 };
       }
     }
 
-    // Funzioni helper per formattazione (puoi inserirle fuori)
+    // Funzioni helper (se non definite fuori)
     function pluralize(n, sing, plur) {
       return n === 1 ? sing : plur;
     }
     function formatEuro(x) {
-      return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
+      return x.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 });
     }
     function formatDateEu(dateStr) {
       if (!dateStr) return '';
@@ -788,16 +571,15 @@ return {
       return d.toLocaleDateString('it-IT');
     }
 
-    // Scroll a contatti
     function scrollToContatti() {
       document.getElementById('contatti').scrollIntoView({ behavior: 'smooth' });
     }
 
     // Calcolo prezzi e sconto
-    const { prezzoBase, totale, alta, supplemento } = prezzoCamera(adulti, bambini, checkin, checkout);
+    const { prezzoBase, totale, supplemento } = prezzoCamera(adulti, bambini, checkin, checkout);
     const sconto = calcolaSconto(totale, giorni);
 
-    // Costruzione riepilogo HTML
+    // Costruzione riepilogo
     let riepilogo = `
       <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
         <div class="mb-2"><b style="color:#bb9457;">
@@ -805,7 +587,7 @@ return {
           ${bambini > 0 ? ` + ${bambini} ${pluralize(bambini, "bambino", "bambini")}` : ""}
         </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
         Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
-        <div class="mb-2">Prezzo a notte: <b style="color:#15803d;">${prezzoBase} €</b></div>
+        <div class="mb-2">Prezzo a notte: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
         ${supplemento > 0 ? `<div class="mb-2">Supplemento 2 bambini: <b style="color:#15803d;">${formatEuro(supplemento)}</b></div>` : ""}
         <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
     `;
@@ -833,44 +615,6 @@ return {
     result.innerHTML = riepilogo;
 
   }, 700);
-};
-
-
-// --- Invio form contatti a Google Sheet e via email ---
-document.getElementById('contactForm').onsubmit = async function(e) {
-  e.preventDefault();
-  document.getElementById('loaderContatti').style.display = 'flex';
-  document.getElementById('successContatti').style.display = 'none';
-  document.getElementById('errorContatti').style.display = 'none';
-
-  // Raccogli dati
-  const nome = document.getElementById('nome').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const messaggio = document.getElementById('messaggio').value.trim();
-
-  // Cambia con il tuo URL Apps Script (foglio Google)
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbyqGsD1bQ-VcweqXUmjZBzOoP3g6ctMOcUECALxg6ok3RbGxkcX6qNiAGJpoNsQF3-Wjw/exec';
-
-  // Prepara dati
-  const data = new FormData();
-  data.append('nome', nome);
-  data.append('email', email);
-  data.append('messaggio', messaggio);
-
-  try {
-    const response = await fetch(scriptURL, { method: 'POST', body: data });
-    const text = await response.text();
-    document.getElementById('loaderContatti').style.display = 'none';
-    if (text.toLowerCase().includes('ok')) {
-      document.getElementById('successContatti').style.display = 'block';
-      e.target.reset();
-    } else {
-      document.getElementById('errorContatti').style.display = 'block';
-    }
-  } catch (err) {
-    document.getElementById('loaderContatti').style.display = 'none';
-    document.getElementById('errorContatti').style.display = 'block';
-  }
 };
 
 // --- Carosello immagini automatico in fondo ---
