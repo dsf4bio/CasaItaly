@@ -295,6 +295,13 @@
 </div>
 
 <script>
+  function scrollToContatti() {
+  const contatti = document.getElementById('contatti');
+  if (contatti) {
+    contatti.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 
 document.getElementById('contactForm').onsubmit = async function(e) {
   e.preventDefault();
@@ -765,9 +772,5 @@ document.getElementById('formCamera').onsubmit = function(e) {
     })();
   </script>
 </footer>
-
-</body>
-</html>
-
 </body>
 </html>
