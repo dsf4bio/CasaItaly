@@ -456,6 +456,76 @@ function prezzoGruppo(persone, checkin, checkout) {
     alta: nottiAlta > 0
   };
 }
+
+
+
+document.getElementById('formGruppi').onsubmit = function(e) {
+  e.preventDefault();
+
+  const persone = parseInt(document.getElementById('people').value, 10);
+  const checkin = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+  const loader = document.getElementById('loaderGruppi');
+  const result = document.getElementById('simResultGruppi');
+
+  result.innerHTML = '';
+  loader.style.display = 'flex';
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+
+    if (!checkin || !checkout || isNaN(persone)) {
+      result.innerHTML = '<span class="error-message" style="display:block;">Compila tutti i campi correttamente.</span>';
+      return;
+    }
+
+    const giorni = Math.floor((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24));
+    const { prezzoBase, totale } = prezzoGruppo(persone, checkin, checkout);
+
+    if (totale === 0) {
+      result.innerHTML = '<span class="error-message" style="display:block;">Controlla le date e il numero di persone (5–30).</span>';
+      return;
+    }
+
+    const sconto = giorni >= 8 ? +(totale * 0.05).toFixed(2) : 0;
+    const scontato = +(totale - sconto).toFixed(2);
+
+    let riepilogo = `
+      <div style="background:#fffbe6;border:2px solid #bb9457;padding:1.1rem 1rem 1.3rem 1rem;border-radius:1rem;">
+        <div class="mb-2"><b style="color:#bb9457;">
+          ${persone} persone
+        </b> | <b>${giorni} ${pluralize(giorni, "notte", "notti")}</b><br>
+        Dal <b>${formatDateEu(checkin)}</b> al <b>${formatDateEu(checkout)}</b></div>
+        <div class="mb-2">Prezzo medio a notte: <b style="color:#15803d;">${formatEuro(prezzoBase)}</b></div>
+        <div class="mb-2">Totale soggiorno: <b style="color:#bb9457;">${formatEuro(totale)}</b></div>
+    `;
+
+    if (sconto > 0) {
+      riepilogo += `
+        <div class="mb-2"><span class="strikethrough">${formatEuro(totale)}</span>
+        <span class="prezzo-sconto">${formatEuro(scontato)}</span>
+        <div class="mb-2" style="color:#15803d;font-weight:700;">Offerta speciale per soggiorni lunghi!</div>
+      `;
+    }
+
+    riepilogo += `
+      <button type="button" class="cta" onclick="scrollToContatti()">Richiedi info senza impegno</button>
+      <ul style="text-align:left; margin:1rem auto 0; max-width:350px; font-size:1.05em; color:#15803d;">
+        <li>✔️ Residence videosorvegliato</li>
+        <li>✔️ Assistenza italiana</li>
+        <li>✔️ Piscina privata</li>
+        <li>✔️ Privacy e sicurezza</li>
+        <li>✔️ Offerta personalizzata</li>
+      </ul>
+      </div>
+    `;
+
+    result.innerHTML = riepilogo;
+
+  }, 700);
+};
+
+
 document.getElementById('formCamera').onsubmit = function(e) {
   e.preventDefault();
 
@@ -695,6 +765,9 @@ document.getElementById('formCamera').onsubmit = function(e) {
     })();
   </script>
 </footer>
+
+</body>
+</html>
 
 </body>
 </html>
